@@ -31,9 +31,9 @@ int main() {
 	engine::Shader shader("test.vs", "test.fs");
 	shader.enable();
 
-	engine::Entity cube(model);
-
 	GLuint transformationLocation = shader.getUniformLocation("transformation");
+	
+	engine::Entity cube(model);
 
 	engine::Camera camera(engine::Vector3f(0.0f, 2.0f, 0.0f), window.getWidth(), window.getHeight());
 
@@ -45,6 +45,8 @@ int main() {
 	terrainShader.enable();
 
 	GLuint terrainTransformationLocation = terrainShader.getUniformLocation("transformation");
+	
+	engine::Render::disableFaceCulling();
 
 	float timer = glfwGetTime();
 	float lastTime = glfwGetTime();
@@ -71,17 +73,13 @@ int main() {
 
 		//render
 		engine::Render::clear();
-
-		engine::Render::disableFaceCulling();
+		
 		terrainShader.enable();
-
 		terrainShader.setUniformMatrix4f(terrainShader.getUniformLocation("view"), viewMatrix);
 		terrainShader.setUniformMatrix4f(terrainShader.getUniformLocation("projection"), projection);
 		terrainShader.setUniform3f(terrainShader.getUniformLocation("lightPosition"), light.getPosition());
 		terrainShader.setUniform4f(terrainShader.getUniformLocation("lightColor"), light.getColor());
-
 		terrain.render(terrainShader, terrainTransformationLocation);
-
 		terrainShader.disable();
 
 		shader.enable();
@@ -89,7 +87,6 @@ int main() {
 		shader.setUniformMatrix4f(shader.getUniformLocation("projection"), projection);
 		shader.setUniform3f(shader.getUniformLocation("lightPosition"), light.getPosition());
 		shader.setUniform4f(shader.getUniformLocation("lightColor"), light.getColor());
-
 		shader.setUniformMatrix4f(transformationLocation, cube.createTransformationMatrix());
 		engine::Render::render(cube);
 		shader.disable();
