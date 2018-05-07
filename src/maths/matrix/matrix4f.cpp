@@ -121,7 +121,7 @@ Matrix4f Matrix4f::rotation(float angle, const Vector3f& axis) {
 	return Matrix4f::rotation(angle, axis.x, axis.y, axis.z);
 }
 
-void Matrix4f::rotate(float angle, float x, float y, float z, Matrix4f& dest) {
+Matrix4f& Matrix4f::rotate(float angle, float x, float y, float z, Matrix4f& dest) {
 	float s = sin(angle);
 	float c = cos(angle);
 	float C = 1.0f - c;
@@ -162,18 +162,20 @@ void Matrix4f::rotate(float angle, float x, float y, float z, Matrix4f& dest) {
 	dest.elements[1 + 1 * 4] = t11;
 	dest.elements[2 + 1 * 4] = t12;
 	dest.elements[3 + 1 * 4] = t13;
+
+	return dest;
 }
 
-void Matrix4f::rotate(float angle, const Vector3f& axis, Matrix4f& dest) {
-	Matrix4f::rotate(angle, axis.x, axis.y, axis.z, dest);
+Matrix4f& Matrix4f::rotate(float angle, const Vector3f& axis, Matrix4f& dest) {
+	return Matrix4f::rotate(angle, axis.x, axis.y, axis.z, dest);
 }
 
-void Matrix4f::rotate(float angle, float x, float y, float z) {
-	rotate(angle, x, y, z, *this);
+Matrix4f& Matrix4f::rotate(float angle, float x, float y, float z) {
+	return rotate(angle, x, y, z, *this);
 }
 
-void Matrix4f::rotate(float angle, const Vector3f& axis) {
-	rotate(angle, axis.x, axis.y, axis.z, *this);
+Matrix4f& Matrix4f::rotate(float angle, const Vector3f& axis) {
+	return rotate(angle, axis.x, axis.y, axis.z, *this);
 }
 
 Matrix4f Matrix4f::scaling(float x, float y, float z) {
@@ -190,7 +192,7 @@ Matrix4f Matrix4f::scaling(const Vector3f& scale) {
 	return Matrix4f::scaling(scale.x, scale.y, scale.z);
 }
 
-void Matrix4f::scale(float x, float y, float z, Matrix4f& dest) {
+Matrix4f& Matrix4f::scale(float x, float y, float z, Matrix4f& dest) {
 	dest.elements[0 + 0 * 4] *= x;
 	dest.elements[1 + 0 * 4] *= x;
 	dest.elements[2 + 0 * 4] *= x;
@@ -203,18 +205,20 @@ void Matrix4f::scale(float x, float y, float z, Matrix4f& dest) {
 	dest.elements[1 + 2 * 4] *= z;
 	dest.elements[2 + 2 * 4] *= z;
 	dest.elements[3 + 2 * 4] *= z;
+
+	return dest;
 }
 
-void Matrix4f::scale(const Vector3f& scale, Matrix4f& dest) {
-	Matrix4f::scale(scale.x, scale.y, scale.z, dest);
+Matrix4f& Matrix4f::scale(const Vector3f& scale, Matrix4f& dest) {
+	return Matrix4f::scale(scale.x, scale.y, scale.z, dest);
 }
 
-void Matrix4f::scale(float x, float y, float z) {
-	scale(x, y, z, *this);
+Matrix4f& Matrix4f::scale(float x, float y, float z) {
+	return scale(x, y, z, *this);
 }
 
-void Matrix4f::scale(const Vector3f& scale) {
-	Matrix4f::scale(scale.x, scale.y, scale.z, *this);
+Matrix4f& Matrix4f::scale(const Vector3f& scale) {
+	return Matrix4f::scale(scale.x, scale.y, scale.z, *this);
 }
 
 Matrix4f Matrix4f::lookingAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
@@ -229,11 +233,11 @@ Matrix4f Matrix4f::lookingAt(const Vector3f& eye, const Vector3f& center, const 
 	return matrix;
 }
 
-void Matrix4f::lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f& dest) {
-	Matrix4f::lookAt(Vector3f(eyeX, eyeY, eyeZ), Vector3f(centerX, centerY, centerZ), Vector3f(upX, upY, upZ), dest);
+Matrix4f& Matrix4f::lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ, Matrix4f& dest) {
+	return Matrix4f::lookAt(Vector3f(eyeX, eyeY, eyeZ), Vector3f(centerX, centerY, centerZ), Vector3f(upX, upY, upZ), dest);
 }	 
 	 
-void Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Vector3f& up, Matrix4f& dest) {
+Matrix4f& Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Vector3f& up, Matrix4f& dest) {
 	Vector3f zAxis = Vector3f::normalize(Vector3f::subtract(eye, center));
 	Vector3f xAxis = Vector3f::normalize(Vector3f::cross(up, zAxis));
 	Vector3f yAxis = Vector3f::cross(zAxis, xAxis);
@@ -250,17 +254,20 @@ void Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Vector3
 	dest.elements[0 + 3 * 4] = -Vector3f::dot(xAxis, eye);
 	dest.elements[1 + 3 * 4] = -Vector3f::dot(yAxis, eye);
 	dest.elements[2 + 3 * 4] = -Vector3f::dot(zAxis, eye);
+
+	return dest;
 }	 
 	 
-void Matrix4f::lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
-	Matrix4f::lookAt(Vector3f(eyeX, eyeY, eyeZ), Vector3f(centerX, centerY, centerZ), Vector3f(upX, upY, upZ), *this);
+Matrix4f& Matrix4f::lookAt(float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ) {
+	return Matrix4f::lookAt(Vector3f(eyeX, eyeY, eyeZ), Vector3f(centerX, centerY, centerZ), Vector3f(upX, upY, upZ), *this);
 }	 
 	 
-void Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Vector3f& up) {
-	Matrix4f::lookAt(eye, center, up, *this);
+Matrix4f& Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Vector3f& up) {
+	return Matrix4f::lookAt(eye, center, up, *this);
 }
 
-void Matrix4f::invert(Matrix4f& dest) {
+Matrix4f& Matrix4f::invert(const Matrix4f& matrix) {
+	Matrix4f dest(matrix);
 	float a = dest.elements[0 + 0 * 4] * dest.elements[1 + 1 * 4] - dest.elements[1 + 0 * 4] * dest.elements[0 + 1 * 4];
 	float b = dest.elements[0 + 0 * 4] * dest.elements[2 + 1 * 4] - dest.elements[2 + 0 * 4] * dest.elements[0 + 1 * 4];
 	float c = dest.elements[0 + 0 * 4] * dest.elements[3 + 1 * 4] - dest.elements[3 + 0 * 4] * dest.elements[0 + 1 * 4];
@@ -307,24 +314,21 @@ void Matrix4f::invert(Matrix4f& dest) {
 	dest.elements[1 + 3 * 4] = nm31;
 	dest.elements[2 + 3 * 4] = nm32;
 	dest.elements[3 + 3 * 4] = nm33;
-}
 
-Matrix4f Matrix4f::invert(const Matrix4f& matrix) {
-	Matrix4f dest(matrix);
-	dest.invert();
 	return dest;
 }
 
-void Matrix4f::invert() {
-	Matrix4f::invert(*this);
+Matrix4f& Matrix4f::invert() {
+	*this = Matrix4f::invert(*this);
+	return *this;
 }
 
-Matrix4f engine::Matrix4f::multiply(Matrix4f left, const Matrix4f& right) {
+Matrix4f Matrix4f::multiply(Matrix4f left, const Matrix4f& right) {
 	return left.multiply(right);
 }
 
-Matrix4f engine::operator*(Matrix4f matrix1, const Matrix4f& matrix2) {
-	return matrix1.multiply(matrix2);
+Matrix4f engine::operator*(Matrix4f left, const Matrix4f& right) {
+	return left.multiply(right);
 }
 
 std::ostream& engine::operator<<(std::ostream& stream, const Matrix4f& matrix) {

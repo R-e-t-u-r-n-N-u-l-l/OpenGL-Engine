@@ -25,7 +25,7 @@ const char* FRAGMENT_SHADER =
 "uniform samplerCube cubeMap;\n"
 
 "void main() {\n"
-	"color = texture(cubeMap, texCoords);\n"
+"color = texture(cubeMap, texCoords);\n"
 "}";
 
 Skybox::Skybox(float size, const char* paths[6]) : m_size(size), m_cubeModel(createCubeMapModel(size)), m_shader(Shader(VERTEX_SHADER, FRAGMENT_SHADER, true)) {
@@ -48,10 +48,10 @@ void Skybox::render(const Matrix4f& projection, const Vector3f& rotation) {
 
 Model Skybox::createCubeMapModel(float size) {
 	GLfloat vertices[] = {
-		 size,  size,  size, //0
-		 size,  size, -size, //1
-		 size, -size, -size, //2
-		 size, -size,  size, //3
+		size,  size,  size, //0
+		size,  size, -size, //1
+		size, -size, -size, //2
+		size, -size,  size, //3
 		-size,  size,  size, //4
 		-size,  size, -size, //5
 		-size, -size,  size, //6

@@ -15,8 +15,11 @@ namespace engine {
 		int m_width, m_height;
 		const char* m_title;
 		bool m_fullscreen;
+		GLenum m_prevError;
 
 		bool init();
+
+		static void resize_callback(GLFWwindow* window, int width, int height);
 
 	public:
 		Window(int width, int height, const char* title);
@@ -44,6 +47,7 @@ namespace engine {
 
 		GLFWwindow* getWindow() const;
 
+		void setWindowSize(int width, int height);
 		void setMinVersion(GLuint major, GLuint minor);
 	};
 }

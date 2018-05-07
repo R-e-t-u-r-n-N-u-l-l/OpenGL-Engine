@@ -356,7 +356,7 @@ namespace engine {
 		/*
 			Function: Overload insertion operator
 
-			Overloads the insertion operator so the 2D vector can be printed to the console
+			Overloads the insertion operator so 2D vector can be printed to the console
 
 		*/
 		friend std::ostream& operator<<(std::ostream& stream, const Vector2f& vector);

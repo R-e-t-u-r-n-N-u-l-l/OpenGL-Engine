@@ -20,6 +20,7 @@ namespace engine {
 
 	public:
 		Skybox(float size, const char* paths[6]);
+		Skybox(const char* vertex, const char* fragment, int projectionLocation, int viewMatrixLocation, float size, const char* paths[6]);
 
 		void render(const Matrix4f& projection, const Vector3f& rotation);
 

@@ -33,7 +33,7 @@ namespace engine {
 		float generateHeight(Noise noise, int x, int z) const;
 
 	public:
-		TerrainGenerator(int chunkSize = 128, int vertexCount = 64, GLuint seed = 0, float heightFactor = 10.0f, float roughness = 0.2f, int octaves = 1);
+		TerrainGenerator(int chunkSize = 128, int vertexCount = 64, int seed = 0, float heightFactor = 10.0f, float roughness = 0.2f, int octaves = 1);
 
 		void render(Shader& shader, int transformationLocation);
 

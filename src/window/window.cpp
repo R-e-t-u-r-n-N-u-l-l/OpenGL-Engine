@@ -26,8 +26,8 @@ Window::~Window() {
 	glfwTerminate();
 }
 
-void resize_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
+void Window::resize_callback(GLFWwindow* window, int width, int height) {
+	static_cast<Window*>(glfwGetWindowUserPointer(window))->setWindowSize(width, height);
 }
 
 bool Window::init() {
@@ -58,6 +58,8 @@ bool Window::init() {
 	glfwShowWindow(m_window);
 	glfwMakeContextCurrent(m_window);
 
+	glfwSetWindowUserPointer(m_window, this);
+
 	glfwSetFramebufferSizeCallback(m_window, resize_callback);
 
 	if (glewInit() != GLEW_OK) {
@@ -74,9 +76,13 @@ bool Window::init() {
 void Window::sync() {
 	GLenum status = glGetError();
 	while (status != GL_NO_ERROR) {
+		if (m_prevError == status)
+			continue;
 		std::cout << "Error with OpenGL: " << status << std::endl;
 		status = glGetError();
+		m_prevError = status;
 	}
+
 
 	Input::update();
 	glfwPollEvents();
@@ -125,12 +131,10 @@ bool Window::isOpen() const {
 }
 
 int Window::getWidth() {
-	glfwGetFramebufferSize(m_window, &m_width, &m_height);
 	return m_width;
 }
 
 int Window::getHeight() {
-	glfwGetFramebufferSize(m_window, &m_width, &m_height);
 	return m_height;
 }
 
@@ -140,6 +144,13 @@ float Window::getAspectRatio() {
 
 GLFWwindow* Window::getWindow() const {
 	return m_window;
+}
+
+void Window::setWindowSize(int width, int height) {
+	m_width = width;
+	m_height = height;
+	glfwSetWindowSize(m_window, width, height);
+	glViewport(0, 0, width, height);
 }
 
 void Window::setMinVersion(GLuint major, GLuint minor) {

@@ -2,10 +2,10 @@
 
 using namespace engine;
 
-TerrainGenerator::TerrainGenerator(int chunkSize, int vertexCount, GLuint seed, float amplitude, float smoothingFactor, int octaves) 
+TerrainGenerator::TerrainGenerator(int chunkSize, int vertexCount, int seed, float amplitude, float smoothingFactor, int octaves) 
 	: CHUNK_SIZE(chunkSize), VERTEX_COUNT(vertexCount), m_seed(seed), AMPLITUDE(amplitude), ROUGHNESS(smoothingFactor), OCTAVES(octaves) {
 
-	if (seed == 0)
+	if (seed == -1)
 		m_seed = Time::timeMillis();
 }
 
