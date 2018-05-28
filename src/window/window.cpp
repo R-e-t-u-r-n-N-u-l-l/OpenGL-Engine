@@ -77,7 +77,7 @@ bool Window::init(int monitorIndex) {
 	return true;
 }
 
-void Window::sync() {
+void Window::update() {
 	GLenum status = glGetError();
 	while (status != GL_NO_ERROR) {
 		status = glGetError();
@@ -91,7 +91,7 @@ void Window::sync() {
 	glfwPollEvents();
 }
 
-void Window::update() {
+void Window::sync() {
 	glfwSwapBuffers(m_window);
 }
 
