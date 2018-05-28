@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-#include "../buffers/buffer.h"
+#include "../buffers/vertexArray.h"
 
 namespace engine {
 
@@ -12,20 +12,22 @@ namespace engine {
 	private:
 		std::vector<GLuint> m_attributes;
 		std::vector<GLuint> m_vbos;
-
-		GLuint m_vao;
+		VertexArray m_vao;
 
 	public:
-		InstancedRender(GLuint vao);
+		InstancedRender(VertexArray vao);
 
-		void addInstancedAttribute(GLuint attribute, int dataSize, int maxInstances, int stride, int offset);
-		void updateVBO(int index, int dataSize, int instances, GLfloat* data);
+		void addInstancedAttribute(GLuint attribute, int dimensions, int maxInstances, int divisor = 1, int stride = 0, int offset = 0);
+		void updateAttribute(GLuint attribute, GLuint dimensions, GLuint instances, GLfloat* data);
 
 		void bind() const;
 		void unbind() const;
 		
-		static GLuint createEmptyVBO(int length);
-
 		int getVBOLength() const;
+
+		VertexArray getVAO() const;
+
+		static GLuint createEmptyVBO(GLuint length, GLuint dimensions);
+
 	};
 }

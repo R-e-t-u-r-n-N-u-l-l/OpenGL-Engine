@@ -100,6 +100,18 @@ void Entity::setScale(Vector3f scale) {
 	m_scale = scale;
 }
 
+void Entity::setPosition(float x, float y, float z) {
+	m_position = Vector3f(x, y, z);
+}
+
+void Entity::setRotation(float x, float y, float z) {
+	m_rotation = Vector3f(x, y, z);
+}
+
+void Entity::setScale(float x, float y, float z) {
+	m_scale = Vector3f(x, y, z);
+}
+
 void Entity::setScale(float scale) {
 	m_scale = Vector3f(scale, scale, scale);
 }

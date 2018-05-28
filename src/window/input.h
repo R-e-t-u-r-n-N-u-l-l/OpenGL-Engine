@@ -17,14 +17,17 @@ namespace engine {
 
 	public:
 		static double mouseX, mouseY;
-		static double dx, dy;
+		static double scrollX, scrollY;
+		static double mouse_dx, mouse_dy;
+		static double scroll_dx, scroll_dy;
 
 		Input(GLFWwindow* window);
 		~Input();
 
 		static void update();
 		
-		static void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
+		static void mouse_move_callback(GLFWwindow* window, double xPos, double yPos);
+		static void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 		static bool keyDown(unsigned key);
 		static bool keyPressed(unsigned key);

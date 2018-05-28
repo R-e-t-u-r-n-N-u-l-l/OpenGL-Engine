@@ -9,15 +9,16 @@ namespace engine {
 	private:
 		GLuint m_buffer;
 		GLuint m_length;
-		GLuint m_typeCount;
+		GLuint m_dimensions;
 
 	public:
-		Buffer(GLfloat* data, GLsizei length, GLuint typeCount);
+		Buffer(GLfloat* data, GLsizei length, GLuint dimensions);
 
 		void bind() const;
 		void unbind() const;
 
+		GLuint getID() const;
 		GLuint getLength() const;
-		GLuint getTypeCount() const;
+		GLuint getDimensions() const;
 	};
 }

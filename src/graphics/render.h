@@ -18,9 +18,11 @@ namespace engine {
 
 		static void render(const Entity& entity);
 		static void render(const Model& model);
+		static void renderNoBind(int indexLength);
 
 		static void renderBatch(InstancedRender& ir, const std::vector<Entity>& entities);
-		static void renderBatch(InstancedRender& ir, const Model& model, int length);
+		static void renderBatch(InstancedRender& ir, const Model& model, int amount);
+		static void renderBatchNoBind(int indexLength, int amount);
 
 		static void enableWireFrame();
 		static void disableWireFrame();

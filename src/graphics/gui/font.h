@@ -2,6 +2,7 @@
 
 #include "../../utilities/stringUtils.h"
 #include "../../utilities/fileio.h"
+#include "../instancedRender.h"
 #include "../render.h"
 #include "../shader.h"
 
@@ -20,16 +21,25 @@ namespace engine {
 
 	private:
 		std::vector<Character> m_characters;
+		IndexBuffer m_ibo;
+		VertexArray m_vao;
+		Shader m_shader;
 		GLuint m_texture;
 
+		void generateBuffers(const std::string& text, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices);
+
 	public:
+		Font(Shader shader, float scale, VertexArray vao, const char* texturePath, const char* fontPath);
 		Font(float scale, const char* texturePath, const char* fontPath);
 
-		void render(std::string text, engine::Shader& shader);
+		void render(const std::string& text);
 
-		Model getTextModel(std::string text);
+		void enableShader();
+		void disableShader();
 
 		Character getCharacterById(int id) const;
+
+		Shader& getShader();
 
 		void setFont(float scale, const char* texturePath, const char* fontPath);
 	};

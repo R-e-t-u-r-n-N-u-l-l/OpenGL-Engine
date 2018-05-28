@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -32,17 +33,51 @@ namespace engine {
 			color[2] = (int)(b * 255);
 			color[3] = (int)(a * 255);
 
-			return File::dataToTextureID(color, 1, 1, GL_RGBA);
+			return dataToTextureID(color, 1, 1, GL_RGBA);
 		}
 
 		static GLuint colorToTexture(Vector4f color) {
-			return File::colorToTexture(color.x, color.y, color.z, color.w);
+			return colorToTexture(color.x, color.y, color.z, color.w);
+		}
+
+		static GLuint loadTextureID(const char* path) {
+			int w, h, n;
+			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
+
+			GLuint type = GL_RGBA;
+
+			switch (n) {
+				case 1:
+					type = GL_RED;
+					break;
+				case 2:
+					type = GL_RG;
+					break;
+				case 3:
+					type = GL_RGB;
+					break;
+			}
+
+			return dataToTextureID(data, w, h, type);
 		}
 
 		static Texture loadTexture(const char* path) {
 			int w, h, n;
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
 			return Texture(data, w, h, n);
+		}
+
+		static GLFWimage loadGLFWimage(const char* path) {
+			int w, h, n;
+			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
+
+			GLFWimage image;
+
+			image.width = w;
+			image.height = h;
+			image.pixels = data;
+
+			return image;
 		}
 
 		// Right, Left, Top, Bottom, Back, Front

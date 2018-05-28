@@ -2,18 +2,20 @@
 
 using namespace engine;
 
-Model::Model(GLfloat* vertices, GLuint* indices, GLsizei vertexLength, GLsizei indexLength, GLuint vertexDimensions, GLuint texture) : m_vertexLength(vertexLength), m_indexLength(indexLength), m_vao(VertexArray()), m_ibo(IndexBuffer(indices, indexLength)) {
+Model::Model(GLfloat* vertices, GLuint* indices, GLsizei vertexLength, GLsizei indexLength, GLuint vertexDimensions, GLuint texture) : 
+	m_vertexLength(vertexLength), m_indexLength(indexLength), m_vao(VertexArray()), m_ibo(IndexBuffer(indices, indexLength)) {
+
 	if (texture <= 0)
 		setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	else
 		m_texture = texture;
 
 	Buffer vbo(vertices, vertexLength, vertexDimensions);
-	m_vao.append(&vbo, 0);
+	m_vao.append(0, vbo.getID(), vertexDimensions);
 }
 
 void Model::appendBuffer(Buffer* buffer, GLuint index) {
-	m_vao.append(buffer, index);
+	m_vao.append(index, buffer->getID(), buffer->getDimensions());
 }
 
 void Model::bind()  const {

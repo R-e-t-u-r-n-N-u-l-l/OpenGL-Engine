@@ -11,13 +11,16 @@ namespace engine {
 
 	private:
 		GLuint m_array;
-		std::vector<Buffer*> m_buffers;
-		std::vector<GLuint> m_indices;
+		std::vector<GLuint> m_buffers;
+		std::vector<GLuint> m_attributes;
 
 	public:
 		VertexArray();
 
-		void append(Buffer* buffer, GLuint index);
+		void append(GLuint attribute, GLuint buffer, GLuint dimensions);
+		void append(GLuint attribute, Buffer* buffer);
+
+		void updateBuffer(GLuint attribute, GLuint dimensions, GLuint length, GLfloat* data);
 		
 		void bind() const;
 		void unbind() const;

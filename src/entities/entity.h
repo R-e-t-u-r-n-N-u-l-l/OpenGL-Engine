@@ -48,10 +48,14 @@ namespace engine {
 
 		Matrix4f createTransformationMatrix() const;
 
-		void setModel(Model model);
 		void setPosition(Vector3f position);
 		void setRotation(Vector3f rotation);
 		void setScale(Vector3f scale);
+		void setPosition(float x, float y, float z);
+		void setRotation(float x, float y, float z);
+		void setScale(float x, float y, float z);
+
+		void setModel(Model model);
 		void setScale(float scale);
 		void setBoundingBox(AABB box);
 	};

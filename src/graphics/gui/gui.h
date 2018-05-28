@@ -14,7 +14,7 @@ namespace engine {
 
 	public:
 		GUI();
-		GUI(const char* vertex, const char* fragment, int transformationLocation);
+		GUI(Shader shader, int transformationLocation);
 
 		void render();
 		void render(Model model, GLuint texture, Matrix4f transformation);

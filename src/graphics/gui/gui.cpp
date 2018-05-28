@@ -27,12 +27,10 @@ GUI::GUI() : m_shader(Shader(
 
 "void main() {\n"
 "	color = texture(image, texCoords);\n"
-"}", true)) {
-	
-	m_transformationLocation = m_shader.getUniformLocation("transformation");
-}
+"}", true)), m_transformationLocation(m_shader.getUniformLocation("transformation")) {}
 
-GUI::GUI(const char* vertex, const char* fragment, int transformationLocation) : m_shader(Shader(vertex, fragment)), m_transformationLocation(transformationLocation) {}
+
+GUI::GUI(Shader shader, int transformationLocation) : m_shader(shader), m_transformationLocation(transformationLocation) {}
 
 void GUI::render() {
 	enableShader();

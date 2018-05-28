@@ -104,15 +104,15 @@ GLuint engine::RawModel::getIndex(int index) {
 }
 
 Model RawModel::createModel(bool tc, bool n, GLuint texture) {
-	Model model(vertices(), indices(), m_vertices.size() * 3, m_indices.size(), 3, texture);
+	Model model(vertices(), indices(), m_vertices.size(), m_indices.size(), 3, texture);
 
 	if (texCoordLength() > 0 && tc) {
-		Buffer texBuffer(texCoords(), m_texCoords.size() * 2, 2);
+		Buffer texBuffer(texCoords(), m_texCoords.size(), 2);
 		model.appendBuffer(&texBuffer, 1);
 	}
 
 	if (normalLength() > 0 && n) {
-		Buffer normalBuffer(normals(), m_normals.size() * 3, 3);
+		Buffer normalBuffer(normals(), m_normals.size(), 3);
 		model.appendBuffer(&normalBuffer, 2);
 	}
 

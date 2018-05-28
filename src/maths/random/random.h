@@ -15,6 +15,7 @@ namespace engine {
 	class Random {
 
 	private:
+
 		/*	
 			Variable: m_seed
 
@@ -48,6 +49,7 @@ namespace engine {
 		static const unsigned long m = 2147483648;
 
 	public:
+
 		/*
 			Constructor: Random
 

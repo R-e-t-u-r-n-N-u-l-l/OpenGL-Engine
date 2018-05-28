@@ -2,37 +2,48 @@
 
 using namespace engine;
 
-const char* VERTEX_SHADER =
-"#version 330 core\n"
+Skybox::Skybox(float size, GLuint cubeMap) : m_size(size), m_cubeModel(createCubeMapModel(size)), m_shader(Shader(
+	
+	//Vertex shader
+	"#version 330 core\n"
 
-"layout(location = 0) in vec3 position;\n"
+	"layout(location = 0) in vec3 position;\n"
 
-"out vec3 texCoords;\n"
+	"out vec3 texCoords;\n"
 
-"uniform mat4 projection;\n"
-"uniform mat4 view;\n"
+	"uniform mat4 projection;\n"
+	"uniform mat4 view;\n"
 
-"void main() {\n"
-"	gl_Position = projection * view * vec4(position, 1.0);\n"
-"	texCoords = position;\n"
-"}";
+	"void main() {\n"
+	"	gl_Position = projection * view * vec4(position, 1.0);\n"
+	"	texCoords = position;\n"
+	"}", 
 
-const char* FRAGMENT_SHADER =
-"#version 330 core\n"
+	//Fragment shader
+	"#version 330 core\n"
 
-"layout(location = 0) out vec4 color;\n"
-"in vec3 texCoords;\n"
-"uniform samplerCube cubeMap;\n"
+	"layout(location = 0) out vec4 color;\n"
+	"in vec3 texCoords;\n"
+	"uniform samplerCube cubeMap;\n"
 
-"void main() {\n"
-"color = texture(cubeMap, texCoords);\n"
-"}";
+	"void main() {\n"
+	"	color = texture(cubeMap, texCoords);\n"
+	"}", true)) {
 
-Skybox::Skybox(float size, const char* paths[6]) : m_size(size), m_cubeModel(createCubeMapModel(size)), m_shader(Shader(VERTEX_SHADER, FRAGMENT_SHADER, true)) {
-	m_cubeModel.setTexture(File::loadCubeMap(paths));
+	m_cubeModel.setTexture(cubeMap);
 	m_projectionLocation = m_shader.getUniformLocation("projection");
 	m_viewMatrixLocation = m_shader.getUniformLocation("view");
 }
+
+Skybox::Skybox(float size, const char* paths[6]) : Skybox(size, File::loadCubeMap(paths)) {}
+
+Skybox::Skybox(Shader shader, int projectionLocation, int viewMatrixLocation, float size, GLuint cubeMap) : m_shader(shader), m_projectionLocation(projectionLocation), 
+	m_viewMatrixLocation(viewMatrixLocation), m_size(size), m_cubeModel(createCubeMapModel(size)) {
+
+	m_cubeModel.setTexture(cubeMap);
+}
+
+Skybox::Skybox(Shader shader, int projectionLocation, int viewMatrixLocation, float size, const char* paths[6]) : Skybox(shader, projectionLocation, viewMatrixLocation, size, File::loadCubeMap(paths)) {}
 
 void Skybox::render(const Matrix4f& projection, const Vector3f& rotation) {
 	m_shader.enable();

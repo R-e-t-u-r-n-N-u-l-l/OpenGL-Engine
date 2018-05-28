@@ -68,11 +68,19 @@ void Shader::disable() const {
 }
 
 GLuint Shader::getUniformLocation(const char* uniformName) {
-	return glGetUniformLocation(m_shader, uniformName);
+	GLint location = glGetUniformLocation(m_shader, uniformName);
+	if (location == -1)
+		std::cout << "Error, can't find uniform: " << uniformName << std::endl;
+
+	return location;
 }
 
-GLuint Shader::getAttribLocation(const char * attribName) {
-	return glGetAttribLocation(m_shader, attribName);
+GLuint Shader::getAttribLocation(const char* attribName) {
+	GLint location = glGetAttribLocation(m_shader, attribName);
+	if (location == -1)
+		std::cout << "Error, can't find attribute: " << attribName << std::endl;
+
+	return location;
 }
 
 void Shader::setUniform1i(GLuint location, int value) {

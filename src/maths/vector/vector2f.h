@@ -13,6 +13,7 @@ namespace engine {
 	class Vector2f {
 
 	public:
+
 		/*
 			Variable: x
 
@@ -37,6 +38,18 @@ namespace engine {
 		/*
 			Constructor: Vector2f
 
+			Initializes the 2D vector as (xy, xy)
+
+			Parameters:
+
+				xy - The value on every axis of the vector
+
+		*/
+		Vector2f(float xy);
+
+		/*
+			Constructor: Vector2f
+
 			Initializes the 2D vector as (x, y)
 
 			Parameters:
@@ -50,8 +63,6 @@ namespace engine {
 
 		/*
 			Function: Add
-
-			Adds another vector to this vector
 
 			Parameters:
 
@@ -67,8 +78,6 @@ namespace engine {
 		/*
 			Function: Subtract
 
-			Subracts another vector from this vector
-
 			Parameters:
 
 				in - The vector to subract from this vector
@@ -83,8 +92,6 @@ namespace engine {
 		/*
 			Function: Multiply
 
-			Multiplies another vector with this vector
-
 			Parameters:
 
 				in - The vector to multiplie with this vector
@@ -98,8 +105,6 @@ namespace engine {
 
 		/*
 			Function: Divide
-
-			Divides this vector by another vector
 
 			Parameters:
 
@@ -116,8 +121,6 @@ namespace engine {
 		/*
 			Function: Add
 
-			Adds another vector to this vector
-
 			Parameters:
 
 				x - The x value of the vector to add to this vector
@@ -132,8 +135,6 @@ namespace engine {
 
 		/*
 			Function: Subtract
-
-			Subracts another vector from this vector
 
 			Parameters:
 
@@ -150,8 +151,6 @@ namespace engine {
 		/*
 			Function: Multiply
 
-			Multiplies another vector with this vector
-
 			Parameters:
 
 				x - The x value of the vector to multiplie with this vector
@@ -166,8 +165,6 @@ namespace engine {
 
 		/*
 			Function: Divide
-
-			Divides this vector by another vector
 
 			Parameters:
 
@@ -198,6 +195,7 @@ namespace engine {
 		*/
 		bool equals(const Vector2f& in);
 
+
 		/*
 			Function: Dot product
 
@@ -222,11 +220,8 @@ namespace engine {
 		*/
 		void normalize();
 
-
 		/*
 			Function: Length squared
-
-			Creates the length of this vector squared
 
 			Returns:
 
@@ -237,8 +232,6 @@ namespace engine {
 
 		/*
 			Function: Length
-
-			Creates the length of this vector
 
 			Returns:
 
@@ -252,8 +245,6 @@ namespace engine {
 
 		/*
 			Function: Dot product
-
-			Creates the dot product of two vectors
 
 			Parameters:
 
@@ -270,8 +261,6 @@ namespace engine {
 		/*
 			Function: Normalize
 
-			Normalizes the input vector
-
 			Parameters:
 
 				in - The vector to normalize
@@ -281,13 +270,11 @@ namespace engine {
 				The input vector normalized
 
 		*/
-		static Vector2f normalize(Vector2f in);
+		static Vector2f& normalize(const Vector2f& in);
 
 
 		/*
 			Function: Add
-
-			Adds two vectors together
 
 			Parameters:
 
@@ -304,8 +291,6 @@ namespace engine {
 		/*
 			Function: Subtract
 
-			Subracts one vector from another vector
-
 			Parameters:
 
 				left - The vector that is subtracted by right
@@ -321,8 +306,6 @@ namespace engine {
 		/*
 			Function: Multiply
 
-			Multiplies two vectors with eachother
-
 			Parameters:
 
 				left - The first vector to multiplie
@@ -337,8 +320,6 @@ namespace engine {
 
 		/*
 			Function: Divide
-
-			Divides one by another vector
 
 			Parameters:
 

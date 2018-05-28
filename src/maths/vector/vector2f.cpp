@@ -2,15 +2,14 @@
 
 using namespace engine;
 
-Vector2f::Vector2f() {
-	x = 0.0f;
-	y = 0.0f;
-}
-
 Vector2f::Vector2f(float x, float y) {
 	this->x = x;
 	this->y = y;
 }
+
+Vector2f::Vector2f() : Vector2f(0.0f, 0.0f) {}
+Vector2f::Vector2f(float xy) : Vector2f(xy, xy) {}
+
 
 Vector2f& Vector2f::add(const Vector2f& in) {
 	return add(in.x, in.y);
@@ -78,9 +77,10 @@ float Vector2f::dot(const Vector2f& left, const Vector2f& right) {
 	return left.x * right.x + left.y * right.y;
 }
 
-Vector2f Vector2f::normalize(Vector2f in) {
-	in.normalize();
-	return in;
+Vector2f& Vector2f::normalize(const Vector2f& in) {
+	Vector2f out(in);
+	out.normalize();
+	return out;
 }
 
 Vector2f Vector2f::add(Vector2f left, const Vector2f& right) {

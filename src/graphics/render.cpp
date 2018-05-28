@@ -13,9 +13,6 @@ void Render::renderTerrain(const Terrain& terrain, int chunkSize) {
 }
 
 void Render::render(const Entity& entity) {
-	if (entity.isEmpty())
-		return;
-	
 	glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture());
 	entity.bind();
 	glDrawElements(GL_TRIANGLES, entity.getModel().getIndexLength(), GL_UNSIGNED_INT, 0);
@@ -28,6 +25,10 @@ void Render::render(const Model& model) {
 	model.unbind();
 }
 
+void Render::renderNoBind(int indexLength) {
+	glDrawElements(GL_TRIANGLES, indexLength, GL_UNSIGNED_INT, 0);
+}
+
 void Render::renderBatch(InstancedRender& ir, const std::vector<Entity>& entities) {
 	entities[0].bind();
 	ir.bind();
@@ -36,12 +37,16 @@ void Render::renderBatch(InstancedRender& ir, const std::vector<Entity>& entitie
 	entities[0].unbind();
 }
 
-void Render::renderBatch(InstancedRender& ir, const Model& model, int length) {
+void Render::renderBatch(InstancedRender& ir, const Model& model, int amount) {
 	model.bind();
 	ir.bind();
-	glDrawElementsInstanced(GL_TRIANGLES, model.getIndexLength(), GL_UNSIGNED_INT, 0, length);
+	glDrawElementsInstanced(GL_TRIANGLES, model.getIndexLength(), GL_UNSIGNED_INT, 0, amount);
 	ir.unbind();
 	model.unbind();
+}
+
+void Render::renderBatchNoBind(int indexLength, int amount) {
+	glDrawElementsInstanced(GL_TRIANGLES, indexLength, GL_UNSIGNED_INT, 0, amount);
 }
 
 void Render::enableWireFrame() {

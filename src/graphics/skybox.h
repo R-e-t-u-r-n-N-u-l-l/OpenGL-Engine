@@ -19,8 +19,10 @@ namespace engine {
 		int m_viewMatrixLocation;
 
 	public:
+		Skybox(float size, GLuint cubeMap);
 		Skybox(float size, const char* paths[6]);
-		Skybox(const char* vertex, const char* fragment, int projectionLocation, int viewMatrixLocation, float size, const char* paths[6]);
+		Skybox(Shader shader, int projectionLocation, int viewMatrixLocation, float size, GLuint cubeMap);
+		Skybox(Shader shader, int projectionLocation, int viewMatrixLocation, float size, const char* paths[6]);
 
 		void render(const Matrix4f& projection, const Vector3f& rotation);
 

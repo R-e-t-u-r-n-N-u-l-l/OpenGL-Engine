@@ -11,7 +11,10 @@ namespace engine {
 		GLsizei m_length;
 
 	public:
-		IndexBuffer(GLuint* data, GLsizei length);
+		IndexBuffer(GLuint* data, GLuint length);
+		IndexBuffer(GLuint maxLength);
+
+		void update(GLuint length, GLuint* data);
 
 		void bind() const;
 		void unbind() const;

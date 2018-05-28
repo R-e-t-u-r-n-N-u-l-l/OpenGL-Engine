@@ -2,29 +2,15 @@
 
 using namespace engine;
 
-Vector3f::Vector3f() {
-	x = 0.0f;
-	y = 0.0f;
-	z = 0.0f;
-}
-
-Vector3f::Vector3f(float xyz) {
-	this->x = xyz;
-	this->y = xyz;
-	this->z = xyz;
-}
-
 Vector3f::Vector3f(float x, float y, float z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 }
 
-Vector3f::Vector3f(Vector2f& vector, float z) {
-	this->x = vector.x;
-	this->y = vector.y;
-	this->z = z;
-}
+Vector3f::Vector3f() : Vector3f(0.0f, 0.0f, 0.0f) {}
+Vector3f::Vector3f(float xyz) : Vector3f(xyz, xyz, xyz) {}
+Vector3f::Vector3f(Vector2f& in, float z) : Vector3f(in.x, in.y, z) {}
 
 Vector3f& Vector3f::add(const Vector3f& in) {
 	return add(in.x, in.y, in.z);
@@ -89,12 +75,12 @@ Vector3f Vector3f::cross(const Vector3f& in) {
 	return cross(*this, in);
 }
 
-float Vector3f::length() const {
-	return sqrt(lengthSquared());
-}
-
 float Vector3f::lengthSquared() const {
 	return x * x + y * y + z * z;
+}
+
+float Vector3f::length() const {
+	return sqrt(lengthSquared());
 }
 
 Vector2f Vector3f::xy() const {
@@ -105,9 +91,10 @@ float Vector3f::dot(const Vector3f& left, const Vector3f& right) {
 	return left.x * right.x + left.y * right.y + left.z * right.z;
 }
 
-Vector3f Vector3f::normalize(Vector3f in) {
-	in.normalize();
-	return in;
+Vector3f& Vector3f::normalize(const Vector3f& in) {
+	Vector3f out(in);
+	out.normalize();
+	return out;
 }
 
 Vector3f Vector3f::cross(const Vector3f& left, const Vector3f& right) {

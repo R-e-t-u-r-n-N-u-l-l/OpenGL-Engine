@@ -20,6 +20,7 @@ namespace engine {
 
 
 	private:
+
 		/*
 			Variable: m_perm
 
@@ -137,6 +138,7 @@ namespace engine {
 		float dot(const int g[], float x, float y, float z, float w);
 
 	public:
+
 		/*
 			Constructor: Noise
 

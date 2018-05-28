@@ -2,21 +2,13 @@
 
 using namespace engine;
 
-Window::Window(int width, int height, const char* title) {
-	m_width		 = width;
-	m_height	 = height;
-	m_title		 = title;
-	m_fullscreen = false;
-
-	if (!init())
+Window::Window(int width, int height, const char* title, int monitorIndex) : m_width(width), m_height(height), m_title(title), m_fullscreen(false) {
+	if (!init(monitorIndex))
 		glfwTerminate();
 }
 
-Window::Window(const char* title) {
-	m_title		 = title;
-	m_fullscreen = true;
-
-	if (!init())
+Window::Window(const char* title, int monitorIndex) : m_title(title), m_fullscreen(true) {
+	if (!init(monitorIndex))
 		glfwTerminate();
 }
 
@@ -30,13 +22,18 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	static_cast<Window*>(glfwGetWindowUserPointer(window))->setWindowSize(width, height);
 }
 
-bool Window::init() {
+bool Window::init(int monitorIndex) {
 	if (!glfwInit()) {
 		std::cerr << "Error whilst initializing GLFW window" << std::endl;
 		return false;
 	}
 
-	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	int count;
+	GLFWmonitor** monitors = glfwGetMonitors(&count);
+	if (monitorIndex > count - 1)
+		monitorIndex = 0;
+
+	GLFWmonitor* monitor = monitors[monitorIndex];
 	const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
 
 	if (m_fullscreen) {
@@ -52,8 +49,11 @@ bool Window::init() {
 		return false;
 	}
 
-	if (!m_fullscreen)
-		glfwSetWindowPos(m_window, (vidmode->width - m_width) / 2, (vidmode->height - m_height) / 2);
+	if (!m_fullscreen) {
+		int x, y;
+		glfwGetMonitorPos(monitor, &x, &y);
+		glfwSetWindowPos(m_window, x + (vidmode->width - m_width) / 2, y + (vidmode->height - m_height) / 2);
+	}
 
 	glfwShowWindow(m_window);
 	glfwMakeContextCurrent(m_window);
@@ -70,19 +70,22 @@ bool Window::init() {
 	engine::Input input(m_window);
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
+	m_delta = 0.0f;
+	m_lastTime = glfwGetTime();
+	m_tickSpeed = 60.0f;
+
 	return true;
 }
 
 void Window::sync() {
 	GLenum status = glGetError();
 	while (status != GL_NO_ERROR) {
+		status = glGetError();
 		if (m_prevError == status)
 			continue;
 		std::cout << "Error with OpenGL: " << status << std::endl;
-		status = glGetError();
 		m_prevError = status;
 	}
-
 
 	Input::update();
 	glfwPollEvents();
@@ -126,16 +129,33 @@ void engine::Window::unlockCursor() const {
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-bool Window::isOpen() const {
+bool Window::isOpen() {
+	float now = glfwGetTime();
+	m_delta += (now - m_lastTime) / (1.0f / m_tickSpeed);
+	m_lastTime = now;
+
 	return !glfwWindowShouldClose(m_window);
 }
 
-int Window::getWidth() {
+bool engine::Window::canUpdate() {
+	if (m_delta >= 1) {
+		m_delta--;
+		return true;
+	}
+
+	return false;
+}
+
+int Window::getWidth() const {
 	return m_width;
 }
 
-int Window::getHeight() {
+int Window::getHeight() const {
 	return m_height;
+}
+
+float Window::getTickSpeed() const {
+	return m_tickSpeed;
 }
 
 float Window::getAspectRatio() {
@@ -144,6 +164,28 @@ float Window::getAspectRatio() {
 
 GLFWwindow* Window::getWindow() const {
 	return m_window;
+}
+
+void Window::setTickSpeed(float tickSpeed) {
+	m_tickSpeed = tickSpeed;
+}
+
+void Window::setIcon(const char** paths, int count) {
+	GLFWimage* images = new GLFWimage[count];
+	for (int i = 0; i < count; i++)
+		images[i] = File::loadGLFWimage(paths[i]);
+
+	glfwSetWindowIcon(m_window, count, images);
+
+	delete[] images;
+}
+
+void Window::setCursor(const char* path, int xHot, int yHot) {
+	GLFWimage image = File::loadGLFWimage(path);
+
+	GLFWcursor* cursor = glfwCreateCursor(&image, xHot, yHot);
+
+	glfwSetCursor(m_window, cursor);
 }
 
 void Window::setWindowSize(int width, int height) {

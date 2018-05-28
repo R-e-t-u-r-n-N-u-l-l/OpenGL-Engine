@@ -2,28 +2,92 @@
 
 using namespace engine;
 
-Font::Font(float scale, const char* texturePath, const char* fontPath) {
+Font::Font(Shader shader, float scale, VertexArray vao, const char* texturePath, const char* fontPath) :
+	m_shader(shader), m_vao(vao), m_ibo(IndexBuffer(new GLuint[6]{ 0, 1, 2, 3, 4, 5 }, 6)) {
+
 	setFont(scale, texturePath, fontPath);
 }
 
-void Font::render(std::string text, engine::Shader& shader) {
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	engine::Render::render(getTextModel(text));
+Font::Font(float scale, const char* texturePath, const char* fontPath) : m_shader(Shader(
+
+	//Vertex shader
+	"#version 330 core\n"
+
+	"layout(location = 0) in vec2 position;\n"
+	"layout(location = 1) in vec2 texCoords;\n"
+
+	"out vec2 coords;\n"
+
+	"uniform vec2 location;\n"
+
+	"void main() {\n"
+	"	gl_Position = vec4(position + location * vec2(2.0, -2.0) + vec2(-1.0, 1.0), -1.0, 1.0);\n"
+	"	coords = texCoords;\n"
+	"}",
+
+	//Fragment shader
+	"#version 330 core\n"
+
+	"layout(location = 0) out vec4 color;\n"
+
+	"in vec2 coords;\n"
+
+	"uniform vec3 textColor;\n"
+	"uniform vec3 borderColor;\n"
+	"uniform sampler2D image;\n"
+
+	"void main() {\n"
+	"	vec4 raw = texture(image, coords);\n"
+	"	color = vec4((1.0 - raw.x) * borderColor + raw.x * textColor, raw.a);\n"
+	"}", true)), m_ibo(IndexBuffer(1500)) {
+
+	m_vao.append(0, InstancedRender::createEmptyVBO(1000, 2), 2);
+	m_vao.append(1, InstancedRender::createEmptyVBO(1000, 2), 2);
+
+	setFont(scale, texturePath, fontPath);
 }
 
-Model Font::getTextModel(std::string text) {
+void Font::render(const std::string& text) {
 	GLfloat* vertices = new GLfloat[4 * text.length() * 2];
 	GLfloat* texCoords = new GLfloat[4 * text.length() * 2];
 	GLuint* indices = new GLuint[6 * text.length()];
 
+	generateBuffers(text, vertices, texCoords, indices);
+
+	m_ibo.update(6 * text.length(), indices);
+	m_vao.bind();
+	m_ibo.bind();
+	m_vao.updateBuffer(0, 2, 4 * text.length(), vertices);
+	m_vao.updateBuffer(1, 2, 4 * text.length(), texCoords);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	engine::Render::renderNoBind(6 * text.length());
+	m_ibo.unbind();
+	m_vao.unbind();
+
+	delete[] vertices;
+	delete[] texCoords;
+	delete[] indices;
+}
+
+void Font::enableShader() {
+	m_shader.enable();
+}
+
+void Font::disableShader() {
+	m_shader.disable();
+}
+
+void Font::generateBuffers(const std::string& text, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices) {
 	float xAdvance = 0.0f;
 
 	for (int i = 0; i < text.length(); i++) {
 		Character c = getCharacterById(int(text[i]));
+
 		for (int j = 0; j < 8; j++) {
 			vertices[i * 8 + j] = c.vertices[j] + (j % 2 == 0 ? xAdvance : 0);
 			texCoords[i * 8 + j] = c.texCoords[j];
 		}
+
 		indices[i * 6 + 0] = i * 4 + 0;
 		indices[i * 6 + 1] = i * 4 + 1;
 		indices[i * 6 + 2] = i * 4 + 2;
@@ -33,17 +97,6 @@ Model Font::getTextModel(std::string text) {
 
 		xAdvance += c.xAdvance;
 	}
-
-	Model model(vertices, indices, 4 * text.length() * 2, 6 * text.length(), 2, m_texture);
-	Buffer texBuffer(texCoords, 4 * text.length() * 2, 2);
-
-	model.appendBuffer(&texBuffer, 1);
-
-	delete[] vertices;
-	delete[] texCoords;
-	delete[] indices;
-
-	return model;
 }
 
 Character Font::getCharacterById(int id) const {
@@ -52,6 +105,10 @@ Character Font::getCharacterById(int id) const {
 			return c;
 
 	return m_characters[0];
+}
+
+Shader& Font::getShader() {
+	return m_shader;
 }
 
 void Font::setFont(float scale, const char* texturePath, const char* fontPath) {

@@ -194,7 +194,7 @@ namespace engine {
 		/*
 			Function: Map
 
-			Maps a value which is between two numbers between two other numbers
+			Maps a value which is between the first two numbers between the second two other numbers
 
 			Parameters:
 
