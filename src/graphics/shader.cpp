@@ -91,16 +91,28 @@ void Shader::setUniform1f(GLuint location, float value) {
 	glUniform1f(location, value);
 }
 
-void Shader::setUniform2f(GLuint location, const Vector2f& value) {
-	glUniform2f(location, value.x, value.y);
+void Shader::setUniform2f(GLuint location, const Vector2f& vector) {
+	glUniform2f(location, vector.x, vector.y);
 }
 
-void Shader::setUniform3f(GLuint location, const Vector3f& value) {
-	glUniform3f(location, value.x, value.y, value.z);
+void Shader::setUniform3f(GLuint location, const Vector3f& vector) {
+	glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
-void Shader::setUniform4f(GLuint location, const Vector4f& value) {
-	glUniform4f(location, value.x, value.y, value.z, value.w);
+void Shader::setUniform4f(GLuint location, const Vector4f& vector) {
+	setUniform4f(location, vector.x, vector.y, vector.z, vector.w);
+}
+
+void Shader::setUniform2f(GLuint location, float x, float y) {
+	glUniform2f(location, x, y);
+}
+
+void Shader::setUniform3f(GLuint location, float x, float y, float z) {
+	glUniform3f(location, x, y, z);
+}
+
+void Shader::setUniform4f(GLuint location, float x, float y, float z, float w) {
+	glUniform4f(location, x, y, z, w);
 }
 
 void Shader::setUniformMatrix4f(GLuint location, const Matrix4f& value) {

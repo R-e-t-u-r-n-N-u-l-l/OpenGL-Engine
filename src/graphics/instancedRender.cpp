@@ -28,8 +28,8 @@ void InstancedRender::addInstancedAttribute(GLuint attribute, int dimensions, in
 	glBindVertexArray(0);
 }
 
-void InstancedRender::updateAttribute(GLuint attribute, GLuint dimensions, GLuint instances, GLfloat* data) {
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbos[attribute]);
+void InstancedRender::updateAttribute(GLuint index, GLuint dimensions, GLuint instances, GLfloat* data) {
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbos[index]);
 	glBufferData(GL_ARRAY_BUFFER, dimensions * instances * sizeof(GLfloat), 0, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, dimensions * instances * sizeof(GLfloat), data);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

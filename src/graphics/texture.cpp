@@ -3,7 +3,9 @@
 
 using namespace engine;
 
-Texture::Texture(unsigned char* data, int width, int height, GLuint components) : m_data(data), m_width(width), m_height(height), m_texture(0) {
+Texture::Texture() {}
+
+Texture::Texture(unsigned char* data, int width, int height, GLuint components) : m_data(data), m_width(width), m_height(height), m_id(0) {
 	switch (components) {
 		case 1:
 			m_type = GL_RED;
@@ -20,11 +22,19 @@ Texture::Texture(unsigned char* data, int width, int height, GLuint components) 
 	}
 }
 
-GLuint engine::Texture::getTexture() {
-	if (m_texture == 0)
-		m_texture = File::dataToTextureID(m_data, m_width, m_height, m_type);
+void Texture::bind() {
+	glBindTexture(GL_TEXTURE_2D, getID());
+}
 
-	return m_texture;
+void Texture::unbind() {
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+GLuint engine::Texture::getID() {
+	if (m_id == 0)
+		m_id = File::dataToTextureID(m_data, m_width, m_height, m_type);
+
+	return m_id;
 }
 
 GLuint Texture::getType() const {

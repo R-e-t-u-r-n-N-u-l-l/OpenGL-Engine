@@ -27,17 +27,20 @@ GUI::GUI() : m_shader(Shader(
 
 "void main() {\n"
 "	color = texture(image, texCoords);\n"
-"}", true)), m_transformationLocation(m_shader.getUniformLocation("transformation")) {}
+"}", true)), m_transformationLocation(m_shader.getUniformLocation("transformation")), m_model(Shape2D::plane().createModel(false, false)) {}
 
 
-GUI::GUI(Shader shader, int transformationLocation) : m_shader(shader), m_transformationLocation(transformationLocation) {}
+GUI::GUI(Shader shader, int transformationLocation) : m_shader(shader), m_transformationLocation(transformationLocation), m_model(Shape2D::plane().createModel(false, false)) {}
 
 void GUI::render() {
 	enableShader();
+	m_model.bind();
 
-	for (GUIObject g : m_objects)
-		g.render(m_transformationLocation, m_shader);
+	for (GUIObject* g : m_objects)
+		if (g && g->isVisible())
+			g->render(m_transformationLocation, m_shader);
 
+	m_model.unbind();
 	disableShader();
 }
 
@@ -55,7 +58,7 @@ void GUI::disableShader() {
 	m_shader.disable();
 }
 
-void GUI::addObject(GUIObject object) {
+void GUI::addObject(GUIObject* object) {
 	m_objects.push_back(object);
 }
 

@@ -90,14 +90,10 @@ Vector4f& Vector4f::normalize(const Vector4f & in) {
 
 Vector4f& Vector4f::multiply(const Matrix4f& matrix, const Vector4f& in) {
 	Vector4f dest;
-	float rx = matrix.elements[0 + 0 * 4] * in.x + matrix.elements[0 + 1 * 4] * in.y + matrix.elements[0 + 2 * 4] * in.z + matrix.elements[0 + 3 * 4] * in.w;
-	float ry = matrix.elements[1 + 0 * 4] * in.x + matrix.elements[1 + 1 * 4] * in.y + matrix.elements[1 + 2 * 4] * in.z + matrix.elements[1 + 3 * 4] * in.w;
-	float rz = matrix.elements[2 + 0 * 4] * in.x + matrix.elements[2 + 1 * 4] * in.y + matrix.elements[2 + 2 * 4] * in.z + matrix.elements[2 + 3 * 4] * in.w;
-	float rw = matrix.elements[3 + 0 * 4] * in.x + matrix.elements[3 + 1 * 4] * in.y + matrix.elements[3 + 2 * 4] * in.z + matrix.elements[3 + 3 * 4] * in.w;
-	dest.x = rx;
-	dest.y = ry;
-	dest.z = rz;
-	dest.w = rw;
+	dest.x = matrix.elements[0 + 0 * 4] * in.x + matrix.elements[0 + 1 * 4] * in.y + matrix.elements[0 + 2 * 4] * in.z + matrix.elements[0 + 3 * 4] * in.w;
+	dest.y = matrix.elements[1 + 0 * 4] * in.x + matrix.elements[1 + 1 * 4] * in.y + matrix.elements[1 + 2 * 4] * in.z + matrix.elements[1 + 3 * 4] * in.w;
+	dest.z = matrix.elements[2 + 0 * 4] * in.x + matrix.elements[2 + 1 * 4] * in.y + matrix.elements[2 + 2 * 4] * in.z + matrix.elements[2 + 3 * 4] * in.w;
+	dest.w = matrix.elements[3 + 0 * 4] * in.x + matrix.elements[3 + 1 * 4] * in.y + matrix.elements[3 + 2 * 4] * in.z + matrix.elements[3 + 3 * 4] * in.w;
 	return dest;
 }
 

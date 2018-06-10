@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../../utilities/primitives.h"
 #include "../../maths/maths.h"
-#include "../../models/model.h"
+
 #include "../shader.h"
 #include "../render.h"
 
@@ -10,17 +9,37 @@ namespace engine {
 
 	class GUIObject {
 
-	private:
+	protected:
 		Matrix4f m_transformation;
-		Model m_model;
+		Vector2f m_position;
+		Vector2f m_scale;
+		GLuint m_texture;
+		float m_rotation;
+		bool m_visible;
+
+		void updateTransformationMatrix();
 
 	public:
-		GUIObject(GLuint texture, float x, float y, float width, float height);
-		GUIObject(GLuint texture, float x, float y, Vector2f scale);
-		GUIObject(GLuint texture, Vector2f position, Vector2f scale);
-		GUIObject(GLuint texture, Vector2f position, float width, float height);
+		GUIObject(float x, float y, float width, float height, float rotation = 0.0f);
+		GUIObject(Vector2f position, Vector2f scale, float rotation = 0.0f);
+		GUIObject(GLuint texture, float x, float y, float width, float height, float rotation = 0.0f);
+		GUIObject(GLuint texture, Vector2f position, Vector2f scale, float rotation = 0.0f);
 
-		void render(int transformationLocation, Shader& shader);
+		virtual void render(int transformationLocation, Shader& shader);
+
+		Vector2f getPosition() const;
+		void setPosition(Vector2f position);
+		void setPosition(float x, float y);
+
+		Vector2f getScale() const;
+		void setScale(Vector2f scale);
+		void setScale(float x, float y);
+
+		float getRotation() const;
+		void setRotation(float rotation);
+
+		bool isVisible() const;
+		void setVisible(bool visible);
 
 	};
 }

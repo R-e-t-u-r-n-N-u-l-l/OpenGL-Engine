@@ -9,13 +9,17 @@ namespace engine {
 	private:
 		unsigned char* m_data;
 		int m_width, m_height;
-		GLuint m_texture;
+		GLuint m_id;
 		GLuint m_type;
 
 	public:
+		Texture();
 		Texture(unsigned char* data, int width, int heigh, GLuint components = 3);
 
-		GLuint getTexture();
+		void bind();
+		void unbind();
+
+		GLuint getID();
 		GLuint getType() const;
 		unsigned char* getData() const;
 		int getWidth() const;

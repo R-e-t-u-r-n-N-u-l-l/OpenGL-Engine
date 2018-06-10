@@ -44,6 +44,9 @@ namespace engine {
 			int w, h, n;
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
 
+			if (!data)
+				std::cerr << "Can't load image: " << path << std::endl;
+
 			GLuint type = GL_RGBA;
 
 			switch (n) {
@@ -64,12 +67,19 @@ namespace engine {
 		static Texture loadTexture(const char* path) {
 			int w, h, n;
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
+
+			if (!data)
+				std::cerr << "Can't load image: " << path << std::endl;
+
 			return Texture(data, w, h, n);
 		}
 
 		static GLFWimage loadGLFWimage(const char* path) {
 			int w, h, n;
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
+
+			if (!data)
+				std::cerr << "Can't load image: " << path << std::endl;
 
 			GLFWimage image;
 

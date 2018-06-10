@@ -89,7 +89,7 @@ namespace engine {
 		/*
 			Function: Create ray
 
-			Casts a ray with the given rotation
+			Casts a ray from (0, 0, 0) with the given rotation
 
 			Parameters:
 
@@ -113,6 +113,47 @@ namespace engine {
 			ray.normalize();
 
 			return ray;
+		}
+
+		/*
+			Function: Create ray
+
+			Casts a ray from the given mouse position
+
+			Parameters:
+
+				projectionMatrix - The projection matrix used for the screen
+				viewMatrix - The view matrix used for the screen
+				mouse - The mouse x and y values in a 2D vector
+				screenSize - The screen width and height in a 2D vector
+
+			Returns:
+
+				A ray cast from the mouse position
+
+			Example:
+
+				Vector3f ray = Maths::createRay(projectionMatrix, viewMatrix, Vector2f(314, 159), Vector2f(1280, 720));
+
+		*/
+		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const int x, const int y, const int width, const int height) {
+			float mouseX = x * 2.0f / width - 1.0f;
+			float mouseY = 1.0f - y * 2.0f / height;
+
+			Vector4f clipCoords(mouseX, mouseY, 1.0f, 1.0f);
+			Matrix4f iProjectionMatrix = Matrix4f::invert(projectionMatrix);
+			Vector4f eyeCoords = Vector4f::multiply(iProjectionMatrix, clipCoords);
+			eyeCoords = Vector4f(eyeCoords.x, eyeCoords.y, eyeCoords.z, 0.0f);
+			Matrix4f iViewMatrix = Matrix4f::invert(viewMatrix);
+			Vector4f rawRay = Vector4f::multiply(iViewMatrix, eyeCoords);
+
+			Vector3f ray = rawRay.xyz();
+			ray.normalize();
+			return ray;
+		}
+
+		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const Vector2f& mouse, const Vector2f& screenSize) {
+			return createRay(projectionMatrix, viewMatrix, mouse.x, mouse.y, screenSize.x, screenSize.y);
 		}
 
 		/*
@@ -271,6 +312,79 @@ namespace engine {
 		static float cerp(float current, float target, float cerp) {
 			float a = (float)(1.0f - cos(cerp * M_PI)) * 0.5f;
 			return current * (1.0f - a) + target * a;
+		}
+
+		/*
+			Function: RGB to HSL
+
+			Converts a RGB color format to a HSL color format
+
+			Parameters:
+
+				R - The R value of the RGB color which will be converted
+				G - The G value of the RGB color which will be converted
+				B - The B value of the RGB color which will be converted
+
+			Returns:
+
+				The RGB color converted to a HSL color
+
+			Example:
+
+				Maths::RGBtoHSL(0.3f, 0.5f, 0.6f);
+
+				HSL will be Vector3f(0.56f, 0.33f, 0.45f);
+
+		*/
+		static Vector3f RGBtoHSL(float R, float G, float B) {
+			Vector3f HSL;
+
+			float min = Maths::min(R, Maths::min(G, B));
+			float max = Maths::max(R, Maths::max(G, B));
+
+			HSL.z = (max + min) / 2.0f;
+
+			if (min == max)
+				HSL.y = HSL.x = 0.0f;
+			else {
+				float d = max - min;
+				HSL.y = HSL.z > 0.5f ? d / (2 - max - min) : d / (max + min);
+
+				if (max == R)
+					HSL.x = (G - B) / d + (G < B ? 6 : 0);
+				else if (max == G)
+					HSL.x = (B - R) / d + 2;
+				else
+					HSL.x = (R - G) / d + 4;
+
+				HSL.x /= 6;
+			}
+
+			return HSL;
+		}
+
+		/*
+			Function: RGB to HSL
+
+			Converts a RGB color format to a HSL color format
+
+			Parameters:
+
+				RGB - The RGB color which will be converted
+
+			Returns:
+				
+				The RGB color converted to a HSL color
+
+			Example:
+
+				Maths::RGBtoHSL(Vector3f(0.3f, 0.5f, 0.6f));
+
+				HSL will be Vector3f(0.56f, 0.33f, 0.45f);
+
+		*/
+		static Vector3f RGBtoHSL(Vector3f RGB) {
+			return RGBtoHSL(RGB.x, RGB.y, RGB.z);
 		}
 	};
 }

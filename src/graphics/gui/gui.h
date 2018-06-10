@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../../utilities/primitives.h"
+#include "../../models/model.h"
+
 #include "../shader.h"
 #include "guiObject.h"
 
@@ -9,7 +12,8 @@ namespace engine {
 
 	private:
 		Shader m_shader;
-		std::vector<GUIObject> m_objects;
+		Model m_model;
+		std::vector<GUIObject*> m_objects;
 		int m_transformationLocation;
 
 	public:
@@ -22,7 +26,7 @@ namespace engine {
 		void enableShader();
 		void disableShader();
 
-		void addObject(GUIObject object);
+		void addObject(GUIObject* object);
 		void clear();
 
 	};

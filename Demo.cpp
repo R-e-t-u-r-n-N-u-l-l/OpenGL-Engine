@@ -45,30 +45,17 @@ int main() {
 	terrainShader.enable();
 
 	GLuint terrainTransformationLocation = terrainShader.getUniformLocation("transformation");
-	
-	engine::Render::disableFaceCulling();
 
-	float timer = glfwGetTime();
-	float lastTime = glfwGetTime();
-	float tickAmt = 60.0f;
-	float delta = 0;
-	int frames = 0;
+	while (window.isOpen()) {		
 
-	while (window.isOpen()) {
-		float now = glfwGetTime();
-		delta += (now - lastTime) / (1.0f / tickAmt);
-		lastTime = now;
-
-		//update
-		while (delta >= 1) {
-			delta--;
-
+		if (window.canUpdate()) {
+		
 			camera.basicMovement(1.0f);
 			viewMatrix = engine::Maths::createViewMatrix(camera.getPosition(), camera.getRotation());
 
 			cube.setPosition(camera.getPosition() + engine::Maths::createRay(camera.getRotation()) * 20.0f);
 
-			window.sync();
+			window.update();
 		}
 
 		//render
@@ -91,7 +78,7 @@ int main() {
 		engine::Render::render(cube);
 		shader.disable();
 
-		window.update();
+		window.sync();
 	}
 
 	return 0;

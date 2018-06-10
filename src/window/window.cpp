@@ -2,8 +2,8 @@
 
 using namespace engine;
 
-Window::Window(int width, int height, const char* title, int monitorIndex) : m_width(width), m_height(height), m_title(title), m_fullscreen(false) {
-	if (!init(monitorIndex))
+Window::Window(int width, int height, const char* title, bool resizable, int monitorIndex) : m_width(width), m_height(height), m_title(title), m_fullscreen(false) {
+	if (!init(monitorIndex, resizable))
 		glfwTerminate();
 }
 
@@ -22,7 +22,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height) {
 	static_cast<Window*>(glfwGetWindowUserPointer(window))->setWindowSize(width, height);
 }
 
-bool Window::init(int monitorIndex) {
+bool Window::init(int monitorIndex, bool resizable) {
 	if (!glfwInit()) {
 		std::cerr << "Error whilst initializing GLFW window" << std::endl;
 		return false;
@@ -35,6 +35,9 @@ bool Window::init(int monitorIndex) {
 
 	GLFWmonitor* monitor = monitors[monitorIndex];
 	const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
+
+	if (!m_fullscreen)
+		glfwWindowHint(GLFW_RESIZABLE, resizable);
 
 	if (m_fullscreen) {
 		m_width  = vidmode->width;
@@ -73,6 +76,9 @@ bool Window::init(int monitorIndex) {
 	m_delta = 0.0f;
 	m_lastTime = glfwGetTime();
 	m_tickSpeed = 60.0f;
+
+	Input::width = m_width;
+	Input::height = m_height;
 
 	return true;
 }
@@ -158,8 +164,8 @@ float Window::getTickSpeed() const {
 	return m_tickSpeed;
 }
 
-float Window::getAspectRatio() {
-	return (float) getWidth() / (float) getHeight();
+float Window::getAspectRatio() const {
+	return float(getWidth()) / float(getHeight());
 }
 
 GLFWwindow* Window::getWindow() const {
@@ -189,6 +195,8 @@ void Window::setCursor(const char* path, int xHot, int yHot) {
 }
 
 void Window::setWindowSize(int width, int height) {
+	Input::width = width;
+	Input::height = height;
 	m_width = width;
 	m_height = height;
 	glfwSetWindowSize(m_window, width, height);

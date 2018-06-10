@@ -111,9 +111,18 @@ Shader& Font::getShader() {
 	return m_shader;
 }
 
+float Font::getTextWidth(const std::string& text) const {
+	float width = 0.0f;
+
+	for (int i = 0; i < text.length(); i++)
+		width += getCharacterById(int(text[i])).xAdvance;
+
+	return width;
+}
+
 void Font::setFont(float scale, const char* texturePath, const char* fontPath) {
 	Texture texture = File::loadTexture(texturePath);
-	m_texture = texture.getTexture();
+	m_texture = texture.getID();
 	std::string file = engine::File::loadFileToString(fontPath);
 
 	std::vector<std::string> lines = engine::String::split(file, '\n');
@@ -125,26 +134,26 @@ void Font::setFont(float scale, const char* texturePath, const char* fontPath) {
 			c.id = std::stoi(elements[1].substr(3, elements[1].size()));
 			int x = std::stoi(elements[2].substr(2, elements[2].size()));
 			int y = std::stoi(elements[3].substr(2, elements[3].size()));
-			int width = std::stoi(elements[4].substr(6, elements[4].size()));
+			c.width = std::stoi(elements[4].substr(6, elements[4].size()));
 			int height = std::stoi(elements[5].substr(7, elements[5].size()));
 			int xOffset = std::stoi(elements[6].substr(8, elements[6].size()));
 			int yOffset = std::stoi(elements[7].substr(8, elements[7].size()));
-			c.xAdvance = (std::stof(elements[8].substr(9, elements[8].size())) * scale) / float(texture.getWidth());
+			c.xAdvance = (std::stof(elements[8].substr(9, elements[8].size())) * scale) / float(texture.getWidth()) * (Input::height / float(texture.getHeight()));
 			
 			c.texCoords[0] = x / float(texture.getWidth());
 			c.texCoords[1] = y / float(texture.getHeight());
 			c.texCoords[2] = c.texCoords[0];
 			c.texCoords[3] = c.texCoords[1] + height / float(texture.getWidth());
-			c.texCoords[4] = c.texCoords[0] + width / float(texture.getHeight());
+			c.texCoords[4] = c.texCoords[0] + c.width / float(texture.getHeight());
 			c.texCoords[5] = c.texCoords[3];
 			c.texCoords[6] = c.texCoords[4];
 			c.texCoords[7] = c.texCoords[1];
 
-			float vWidth = width / float(texture.getWidth()) * scale;
-			float vHeight = -height / float(texture.getHeight()) * scale;
-			float v_xOffset = xOffset / float(texture.getWidth()) * scale;
-			float v_yOffset = -yOffset / float(texture.getHeight()) * scale;
-
+			float vWidth = c.width / float(texture.getWidth()) * (Input::height / float(texture.getHeight())) * scale;
+			float vHeight = -height / float(texture.getHeight()) * (Input::width / float(texture.getWidth())) * scale;
+			float v_xOffset = xOffset / float(texture.getWidth()) * (Input::height / float(texture.getHeight())) * scale;
+			float v_yOffset = -yOffset / float(texture.getHeight()) * (Input::width / float(texture.getWidth())) * scale;
+			
 			c.vertices[0] = v_xOffset;
 			c.vertices[1] = v_yOffset;
 			c.vertices[2] = v_xOffset;

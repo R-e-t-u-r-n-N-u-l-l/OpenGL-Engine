@@ -193,18 +193,11 @@ Matrix4f Matrix4f::scaling(const Vector3f& scale) {
 }
 
 Matrix4f& Matrix4f::scale(float x, float y, float z, Matrix4f& dest) {
-	dest.elements[0 + 0 * 4] *= x;
-	dest.elements[1 + 0 * 4] *= x;
-	dest.elements[2 + 0 * 4] *= x;
-	dest.elements[3 + 0 * 4] *= x;
-	dest.elements[0 + 1 * 4] *= y;
-	dest.elements[1 + 1 * 4] *= y;
-	dest.elements[2 + 1 * 4] *= y;
-	dest.elements[3 + 1 * 4] *= y;
-	dest.elements[0 + 2 * 4] *= z;
-	dest.elements[1 + 2 * 4] *= z;
-	dest.elements[2 + 2 * 4] *= z;
-	dest.elements[3 + 2 * 4] *= z;
+	for (int i = 0; i < 4; i++) {
+		dest.elements[i + 0 * 4] *= x;
+		dest.elements[i + 1 * 4] *= y;
+		dest.elements[i + 2 * 4] *= z;
+	}
 
 	return dest;
 }
@@ -268,6 +261,7 @@ Matrix4f& Matrix4f::lookAt(const Vector3f& eye, const Vector3f& center, const Ve
 
 Matrix4f& Matrix4f::invert(const Matrix4f& matrix) {
 	Matrix4f dest(matrix);
+
 	float a = dest.elements[0 + 0 * 4] * dest.elements[1 + 1 * 4] - dest.elements[1 + 0 * 4] * dest.elements[0 + 1 * 4];
 	float b = dest.elements[0 + 0 * 4] * dest.elements[2 + 1 * 4] - dest.elements[2 + 0 * 4] * dest.elements[0 + 1 * 4];
 	float c = dest.elements[0 + 0 * 4] * dest.elements[3 + 1 * 4] - dest.elements[3 + 0 * 4] * dest.elements[0 + 1 * 4];
@@ -282,22 +276,22 @@ Matrix4f& Matrix4f::invert(const Matrix4f& matrix) {
 	float l = dest.elements[2 + 2 * 4] * dest.elements[3 + 3 * 4] - dest.elements[3 + 2 * 4] * dest.elements[2 + 3 * 4];
 	float det = a * l - b * k + c * j + d * i - e * h + f * g;
 	det = 1.0f / det;
-	float nm00 = (dest.elements[1 + 1 * 4] * l - dest.elements[2 + 1 * 4] * k + dest.elements[3 + 1 * 4] * j) * det;
-	float nm01 = (-dest.elements[1 + 0 * 4] * l + dest.elements[2 + 0 * 4] * k - dest.elements[3 + 0 * 4] * j) * det;
-	float nm02 = (dest.elements[1 + 3 * 4] * f - dest.elements[2 + 3 * 4] * e + dest.elements[3 + 3 * 4] * d) * det;
-	float nm03 = (-dest.elements[1 + 2 * 4] * f + dest.elements[2 + 2 * 4] * e - dest.elements[3 + 2 * 4] * d) * det;
-	float nm10 = (-dest.elements[0 + 1 * 4] * l + dest.elements[2 + 1 * 4] * i - dest.elements[3 + 1 * 4] * h) * det;
-	float nm11 = (dest.elements[0 + 0 * 4] * l - dest.elements[2 + 0 * 4] * i + dest.elements[3 + 0 * 4] * h) * det;
-	float nm12 = (-dest.elements[0 + 3 * 4] * f + dest.elements[2 + 3 * 4] * c - dest.elements[3 + 3 * 4] * b) * det;
-	float nm13 = (dest.elements[0 + 2 * 4] * f - dest.elements[2 + 2 * 4] * c + dest.elements[3 + 2 * 4] * b) * det;
-	float nm20 = (dest.elements[0 + 1 * 4] * k - dest.elements[1 + 1 * 4] * i + dest.elements[3 + 1 * 4] * g) * det;
-	float nm21 = (-dest.elements[0 + 0 * 4] * k + dest.elements[1 + 0 * 4] * i - dest.elements[3 + 0 * 4] * g) * det;
-	float nm22 = (dest.elements[0 + 3 * 4] * e - dest.elements[1 + 0 * 4] * c + dest.elements[3 + 0 * 4] * a) * det;
-	float nm23 = (-dest.elements[0 + 2 * 4] * e + dest.elements[1 + 2 * 4] * c - dest.elements[3 + 2 * 4] * a) * det;
-	float nm30 = (-dest.elements[0 + 1 * 4] * j + dest.elements[1 + 1 * 4] * h - dest.elements[2 + 1 * 4] * g) * det;
-	float nm31 = (dest.elements[0 + 0 * 4] * j - dest.elements[1 + 0 * 4] * h + dest.elements[2 + 0 * 4] * g) * det;
-	float nm32 = (-dest.elements[0 + 3 * 4] * d + dest.elements[1 + 3 * 4] * b - dest.elements[2 + 3 * 4] * a) * det;
-	float nm33 = (dest.elements[0 + 2 * 4] * d - dest.elements[1 + 2 * 4] * b + dest.elements[2 + 2 * 4] * a) * det;
+	float nm00 = (dest.elements[1 + 1 * 4] * l - dest.elements[2 + 1 * 4] * k + dest.elements[3 + 1 * 4] * j) * det;;
+	float nm01 = (-dest.elements[1 + 0 * 4] * l + dest.elements[2 + 0 * 4] * k - dest.elements[3 + 0 * 4] * j) * det;;
+	float nm02 = (dest.elements[1 + 3 * 4] * f - dest.elements[2 + 3 * 4] * e + dest.elements[3 + 3 * 4] * d) * det;;
+	float nm03 = (-dest.elements[1 + 2 * 4] * f + dest.elements[2 + 2 * 4] * e - dest.elements[3 + 2 * 4] * d) * det;;
+	float nm10 = (-dest.elements[0 + 1 * 4] * l + dest.elements[2 + 1 * 4] * i - dest.elements[3 + 1 * 4] * h) * det;;
+	float nm11 = (dest.elements[0 + 0 * 4] * l - dest.elements[2 + 0 * 4] * i + dest.elements[3 + 0 * 4] * h) * det;;
+	float nm12 = (-dest.elements[0 + 3 * 4] * f + dest.elements[2 + 3 * 4] * c - dest.elements[3 + 3 * 4] * b) * det;;
+	float nm13 = (dest.elements[0 + 2 * 4] * f - dest.elements[2 + 2 * 4] * c + dest.elements[3 + 2 * 4] * b) * det;;
+	float nm20 = (dest.elements[0 + 1 * 4] * k - dest.elements[1 + 1 * 4] * i + dest.elements[3 + 1 * 4] * g) * det;;
+	float nm21 = (-dest.elements[0 + 0 * 4] * k + dest.elements[1 + 0 * 4] * i - dest.elements[3 + 0 * 4] * g) * det;;
+	float nm22 = (dest.elements[0 + 3 * 4] * e - dest.elements[1 + 0 * 4] * c + dest.elements[3 + 0 * 4] * a) * det;;
+	float nm23 = (-dest.elements[0 + 2 * 4] * e + dest.elements[1 + 2 * 4] * c - dest.elements[3 + 2 * 4] * a) * det;;
+	float nm30 = (-dest.elements[0 + 1 * 4] * j + dest.elements[1 + 1 * 4] * h - dest.elements[2 + 1 * 4] * g) * det;;
+	float nm31 = (dest.elements[0 + 0 * 4] * j - dest.elements[1 + 0 * 4] * h + dest.elements[2 + 0 * 4] * g) * det;;
+	float nm32 = (-dest.elements[0 + 3 * 4] * d + dest.elements[1 + 3 * 4] * b - dest.elements[2 + 3 * 4] * a) * det;;
+	float nm33 = (dest.elements[0 + 2 * 4] * d - dest.elements[1 + 2 * 4] * b + dest.elements[2 + 2 * 4] * a) * det;;
 	dest.elements[0 + 0 * 4] = nm00;
 	dest.elements[1 + 0 * 4] = nm01;
 	dest.elements[2 + 0 * 4] = nm02;

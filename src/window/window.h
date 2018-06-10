@@ -19,12 +19,12 @@ namespace engine {
 		GLenum m_prevError;
 		float m_tickSpeed, m_lastTime, m_delta;
 
-		bool init(int monitorIndex);
+		bool init(int monitorIndex, bool resizable = true);
 
 		static void resize_callback(GLFWwindow* window, int width, int height);
 
 	public:
-		Window(int width, int height, const char* title, int monitorIndex = 0);
+		Window(int width, int height, const char* title, bool resizable = true, int monitorIndex = 0);
 		Window(const char* title, int monitorIndex = 0);
 		~Window();
 		
@@ -47,8 +47,7 @@ namespace engine {
 		int getHeight() const;
 
 		float getTickSpeed() const;
-
-		float getAspectRatio();
+		float getAspectRatio() const;
 
 		GLFWwindow* getWindow() const;
 

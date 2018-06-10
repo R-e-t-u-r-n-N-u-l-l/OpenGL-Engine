@@ -2,6 +2,7 @@
 
 #include "../../utilities/stringUtils.h"
 #include "../../utilities/fileio.h"
+#include "../../window/input.h"
 #include "../instancedRender.h"
 #include "../render.h"
 #include "../shader.h"
@@ -13,7 +14,7 @@ namespace engine {
 	struct Character {
 		GLfloat* vertices = new GLfloat[8];
 		GLfloat* texCoords = new GLfloat[8];
-		float xAdvance;
+		float xAdvance, width;
 		GLuint id;
 	};
 
@@ -40,6 +41,7 @@ namespace engine {
 		Character getCharacterById(int id) const;
 
 		Shader& getShader();
+		float getTextWidth(const std::string& text) const;
 
 		void setFont(float scale, const char* texturePath, const char* fontPath);
 	};

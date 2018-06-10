@@ -5,30 +5,28 @@
 
 namespace engine {
 
-#define MAX_KEYS    256
-#define MAX_BUTTONS 16
-
 	class Input {
 
 	private:
 		static GLFWwindow* m_window;
-		static bool m_keys[MAX_KEYS];
-		static bool m_buttons[MAX_BUTTONS];
+		static bool m_keys[GLFW_KEY_LAST];
+		static bool m_buttons[GLFW_MOUSE_BUTTON_LAST];
+
+		static void mouse_move_callback(GLFWwindow* window, double xPos, double yPos);
+		static void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 	public:
 		static double mouseX, mouseY;
 		static double scrollX, scrollY;
 		static double mouse_dx, mouse_dy;
 		static double scroll_dx, scroll_dy;
+		static int width, height;
 
 		Input(GLFWwindow* window);
 		~Input();
 
 		static void update();
 		
-		static void mouse_move_callback(GLFWwindow* window, double xPos, double yPos);
-		static void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
-
 		static bool keyDown(unsigned key);
 		static bool keyPressed(unsigned key);
 		static bool keyReleased(unsigned key);

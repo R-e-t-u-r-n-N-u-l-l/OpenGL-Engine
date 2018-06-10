@@ -3,12 +3,13 @@
 using namespace engine;
 
 GLFWwindow* Input::m_window;
-bool Input::m_keys[MAX_KEYS];
-bool Input::m_buttons[MAX_BUTTONS];
+bool Input::m_keys[GLFW_KEY_LAST];
+bool Input::m_buttons[GLFW_MOUSE_BUTTON_LAST];
 double Input::mouseX, Input::mouseY;
 double Input::scrollX, Input::scrollY;
 double Input::mouse_dx, Input::mouse_dy;
 double Input::scroll_dx, Input::scroll_dy;
+int Input::width, Input::height;
 
 Input::Input(GLFWwindow* window) {
 	m_window = window;
@@ -19,10 +20,10 @@ Input::Input(GLFWwindow* window) {
 Input::~Input() {}
 
 void Input::update() {
-	for (int i = 0; i < MAX_KEYS; i++)
+	for (int i = 0; i < GLFW_KEY_LAST; i++)
 		m_keys[i] = keyDown(i);
 
-	for (int i = 0; i < MAX_BUTTONS; i++)
+	for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
 		m_buttons[i] = mouseButtonDown(i);
 
 	mouse_dx = 0;
