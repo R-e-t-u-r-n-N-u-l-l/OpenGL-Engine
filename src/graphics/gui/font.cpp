@@ -2,13 +2,13 @@
 
 using namespace engine;
 
-Font::Font(Shader shader, float scale, VertexArray vao, const char* texturePath, const char* fontPath) :
+Font::Font(Shader shader, VertexArray vao, const char* texturePath, const char* fontPath) :
 	m_shader(shader), m_vao(vao), m_ibo(IndexBuffer(new GLuint[6]{ 0, 1, 2, 3, 4, 5 }, 6)) {
 
-	setFont(scale, texturePath, fontPath);
+	setFont(texturePath, fontPath);
 }
 
-Font::Font(float scale, const char* texturePath, const char* fontPath) : m_shader(Shader(
+Font::Font(const char* texturePath, const char* fontPath) : m_shader(Shader(
 
 	//Vertex shader
 	"#version 330 core\n"
@@ -44,15 +44,15 @@ Font::Font(float scale, const char* texturePath, const char* fontPath) : m_shade
 	m_vao.append(0, InstancedRender::createEmptyVBO(1000, 2), 2);
 	m_vao.append(1, InstancedRender::createEmptyVBO(1000, 2), 2);
 
-	setFont(scale, texturePath, fontPath);
+	setFont(texturePath, fontPath);
 }
 
-void Font::render(const std::string& text) {
+void Font::render(const std::string& text, float scale) {
 	GLfloat* vertices = new GLfloat[4 * text.length() * 2];
 	GLfloat* texCoords = new GLfloat[4 * text.length() * 2];
 	GLuint* indices = new GLuint[6 * text.length()];
 
-	generateBuffers(text, vertices, texCoords, indices);
+	generateBuffers(text, scale, vertices, texCoords, indices);
 
 	m_ibo.update(6 * text.length(), indices);
 	m_vao.bind();
@@ -77,14 +77,14 @@ void Font::disableShader() {
 	m_shader.disable();
 }
 
-void Font::generateBuffers(const std::string& text, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices) {
+void Font::generateBuffers(const std::string& text, float scale, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices) {
 	float xAdvance = 0.0f;
 
 	for (int i = 0; i < text.length(); i++) {
 		Character c = getCharacterById(int(text[i]));
 
 		for (int j = 0; j < 8; j++) {
-			vertices[i * 8 + j] = c.vertices[j] + (j % 2 == 0 ? xAdvance : 0);
+			vertices[i * 8 + j] = (c.vertices[j] + (j % 2 == 0 ? xAdvance : 0)) * scale;
 			texCoords[i * 8 + j] = c.texCoords[j];
 		}
 
@@ -111,16 +111,32 @@ Shader& Font::getShader() {
 	return m_shader;
 }
 
-float Font::getTextWidth(const std::string& text) const {
+GLuint Font::getTexture() const {
+	return m_texture;
+}
+
+float Font::getTextWidth(const std::string& text, float scale) const {
 	float width = 0.0f;
 
 	for (int i = 0; i < text.length(); i++)
-		width += getCharacterById(int(text[i])).xAdvance;
+		width += getCharacterById(int(text[i])).xAdvance * scale;
 
-	return width;
+	return width / 2.0f;
 }
 
-void Font::setFont(float scale, const char* texturePath, const char* fontPath) {
+float Font::getTextHeight(const std::string& text, float scale) const {
+	float height = getCharacterById(text[0]).height;
+
+	for (int i = 1; i < text.length(); i++) {
+		Character c = getCharacterById(text[i]);
+		if (c.height > height)
+			height = c.height;
+	}
+
+	return height * scale / 2.0f;
+}
+
+void Font::setFont(const char* texturePath, const char* fontPath) {
 	Texture texture = File::loadTexture(texturePath);
 	m_texture = texture.getID();
 	std::string file = engine::File::loadFileToString(fontPath);
@@ -134,25 +150,25 @@ void Font::setFont(float scale, const char* texturePath, const char* fontPath) {
 			c.id = std::stoi(elements[1].substr(3, elements[1].size()));
 			int x = std::stoi(elements[2].substr(2, elements[2].size()));
 			int y = std::stoi(elements[3].substr(2, elements[3].size()));
-			c.width = std::stoi(elements[4].substr(6, elements[4].size()));
+			int width = std::stoi(elements[4].substr(6, elements[4].size()));
 			int height = std::stoi(elements[5].substr(7, elements[5].size()));
 			int xOffset = std::stoi(elements[6].substr(8, elements[6].size()));
 			int yOffset = std::stoi(elements[7].substr(8, elements[7].size()));
-			c.xAdvance = (std::stof(elements[8].substr(9, elements[8].size())) * scale) / float(texture.getWidth()) * (Input::height / float(texture.getHeight()));
+			c.xAdvance = (std::stof(elements[8].substr(9, elements[8].size()))) / float(texture.getWidth()) * (Input::height / float(texture.getHeight()));
 			
 			c.texCoords[0] = x / float(texture.getWidth());
 			c.texCoords[1] = y / float(texture.getHeight());
 			c.texCoords[2] = c.texCoords[0];
 			c.texCoords[3] = c.texCoords[1] + height / float(texture.getWidth());
-			c.texCoords[4] = c.texCoords[0] + c.width / float(texture.getHeight());
+			c.texCoords[4] = c.texCoords[0] + width / float(texture.getHeight());
 			c.texCoords[5] = c.texCoords[3];
 			c.texCoords[6] = c.texCoords[4];
 			c.texCoords[7] = c.texCoords[1];
 
-			float vWidth = c.width / float(texture.getWidth()) * (Input::height / float(texture.getHeight())) * scale;
-			float vHeight = -height / float(texture.getHeight()) * (Input::width / float(texture.getWidth())) * scale;
-			float v_xOffset = xOffset / float(texture.getWidth()) * (Input::height / float(texture.getHeight())) * scale;
-			float v_yOffset = -yOffset / float(texture.getHeight()) * (Input::width / float(texture.getWidth())) * scale;
+			float vWidth = width / float(texture.getWidth()) * (Input::height / float(texture.getHeight()));
+			float vHeight = -height / float(texture.getHeight()) * (Input::width / float(texture.getWidth()));
+			float v_xOffset = xOffset / float(texture.getWidth()) * (Input::height / float(texture.getHeight()));
+			float v_yOffset = -yOffset / float(texture.getHeight()) * (Input::width / float(texture.getWidth()));
 			
 			c.vertices[0] = v_xOffset;
 			c.vertices[1] = v_yOffset;
@@ -162,6 +178,8 @@ void Font::setFont(float scale, const char* texturePath, const char* fontPath) {
 			c.vertices[5] = vHeight + v_yOffset;
 			c.vertices[6] = vWidth + v_xOffset;
 			c.vertices[7] = v_yOffset;
+
+			c.height = -vHeight + -v_yOffset;
 
 			m_characters.push_back(c);
 		}

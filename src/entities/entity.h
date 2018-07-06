@@ -15,6 +15,7 @@ namespace engine {
 		Vector3f m_position;
 		Vector3f m_rotation;
 		Vector3f m_scale;
+		Vector3f m_size;
 		AABB m_boundingBox;
 
 		bool m_empty;
@@ -25,38 +26,43 @@ namespace engine {
 		Entity(Model model, Vector3f position, Vector3f rotation, Vector3f scale);
 		Entity(Vector3f position, Vector3f rotation, Vector3f scale);
 
-		void translate(Vector3f translation);
-		void rotate(Vector3f rotation);
-		void scale(Vector3f scale);
-		void scale(float scale);
+		virtual void translate(Vector3f translation);
+		virtual void rotate(Vector3f rotation);
+		virtual void scale(Vector3f scale);
+		virtual void scale(float scale);
 
-		void translate(float x, float y, float z);
-		void rotate(float x, float y, float z);
-		void scale(float x, float y, float z);
+		virtual void translate(float x, float y, float z);
+		virtual void rotate(float x, float y, float z);
+		virtual void scale(float x, float y, float z);
 
-		void bind() const;
-		void unbind() const;
+		virtual void bind() const;
+		virtual void unbind() const;
 
-		Model getModel() const;
-		Vector3f getPosition() const;
-		Vector3f getRotation() const;
-		Vector3f getScale() const;
-		AABB getBoundingBox() const;
+		virtual Model getModel() const;
+		virtual Vector3f getPosition() const;
+		virtual Vector3f getRotation() const;
+		virtual Vector3f getScale() const;
+		virtual Vector3f getSize() const;
+		virtual AABB getBoundingBox() const;
+		 
+		virtual bool isEmpty() const;
+		virtual bool collsionWithEntity(const Entity& entity);
 
-		bool isEmpty() const;
-		bool collsionWithEntity(const Entity& entity);
+		virtual void updateBoundingBox();
 
-		Matrix4f createTransformationMatrix() const;
+		virtual Matrix4f createTransformationMatrix() const;
 
-		void setPosition(Vector3f position);
-		void setRotation(Vector3f rotation);
-		void setScale(Vector3f scale);
-		void setPosition(float x, float y, float z);
-		void setRotation(float x, float y, float z);
-		void setScale(float x, float y, float z);
-
-		void setModel(Model model);
-		void setScale(float scale);
-		void setBoundingBox(AABB box);
+		virtual void setPosition(Vector3f position);
+		virtual void setRotation(Vector3f rotation);
+		virtual void setScale(Vector3f scale);
+		virtual void setSize(Vector3f size);
+		virtual void setPosition(float x, float y, float z);
+		virtual void setRotation(float x, float y, float z);
+		virtual void setScale(float x, float y, float z);
+		virtual void setSize(float x, float y, float z);
+		
+		virtual void setModel(Model model);
+		virtual void setScale(float scale);
+		virtual void setBoundingBox(AABB box);
 	};
 }

@@ -32,6 +32,10 @@ void Input::update() {
 	scroll_dy = 0;
 }
 
+bool Input::mouseMoved() {
+	return mouse_dx != 0 || mouse_dy != 0;
+}
+
 void Input::mouse_move_callback(GLFWwindow* window, double xPos, double yPos) {
 	mouse_dx = mouseX - xPos;
 	mouse_dy = mouseY - yPos;

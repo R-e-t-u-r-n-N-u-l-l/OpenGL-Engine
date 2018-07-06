@@ -136,24 +136,51 @@ namespace engine {
 				Vector3f ray = Maths::createRay(projectionMatrix, viewMatrix, Vector2f(314, 159), Vector2f(1280, 720));
 
 		*/
-		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const int x, const int y, const int width, const int height) {
-			float mouseX = x * 2.0f / width - 1.0f;
-			float mouseY = 1.0f - y * 2.0f / height;
+		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const int mouseX, const int mouseY, const int width, const int height) {
+			float mX = mouseX * 2.0f / width - 1.0f;
+			float mY = 1.0f - mouseY * 2.0f / height;
 
-			Vector4f clipCoords(mouseX, mouseY, 1.0f, 1.0f);
+			Vector4f clipCoords(mX, mY, -1.0f, 1.0f);
 			Matrix4f iProjectionMatrix = Matrix4f::invert(projectionMatrix);
 			Vector4f eyeCoords = Vector4f::multiply(iProjectionMatrix, clipCoords);
-			eyeCoords = Vector4f(eyeCoords.x, eyeCoords.y, eyeCoords.z, 0.0f);
+			eyeCoords = eyeCoords / eyeCoords.w;
+			eyeCoords = Vector4f(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
 			Matrix4f iViewMatrix = Matrix4f::invert(viewMatrix);
-			Vector4f rawRay = Vector4f::multiply(iViewMatrix, eyeCoords);
+			Vector4f rawRay1 = Vector4f::multiply(viewMatrix, eyeCoords);
+			Vector4f rawRay2 = Vector4f::multiply(iViewMatrix, eyeCoords);
 
-			Vector3f ray = rawRay.xyz();
+			Vector3f ray = rawRay2.xyz();
 			ray.normalize();
 			return ray;
 		}
 
 		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const Vector2f& mouse, const Vector2f& screenSize) {
 			return createRay(projectionMatrix, viewMatrix, mouse.x, mouse.y, screenSize.x, screenSize.y);
+		}
+
+		static Vector3f createRay(const Vector3f& cameraLookAt, const Vector3f& cameraPosition, const Vector3f& cameraUp, const double fov, const double nearClip, const int x, const int y, const int width, const int height) {
+			float mouseX = x / (width / 2.0f) - 1.0f;
+			float mouseY = 1.0f - y / (height / 2.0f);
+
+			Vector3f view = cameraLookAt - cameraPosition;
+			view.normalize();
+
+			Vector3f h = Vector3f::cross(view, cameraUp);
+			h.normalize();
+
+			Vector3f v = Vector3f::cross(h, view);
+			v.normalize();
+
+			const double fovr = fov * M_PI / 180.0f;
+			const double vLength = tan(fovr / 2.0f) * nearClip;
+			const double hLength = vLength * (width / height);
+
+			v.multiply(vLength);
+			h.multiply(hLength);
+
+			Vector3f ray = view * nearClip + h * mouseX + v * mouseY;
+			ray.normalize();
+			return ray;
 		}
 
 		/*

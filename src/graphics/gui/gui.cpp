@@ -10,7 +10,7 @@ GUI::GUI() : m_shader(Shader(
 "layout(location = 0) in vec3 position;\n"
 
 "out vec2 texCoords;\n"
-"uniform mat4 transformation;"
+"uniform mat4 transformation;\n"
 
 "void main() {\n"
 "	gl_Position = transformation * vec4(position.xy, -1.0, 1.0);\n"
@@ -30,7 +30,7 @@ GUI::GUI() : m_shader(Shader(
 "}", true)), m_transformationLocation(m_shader.getUniformLocation("transformation")), m_model(Shape2D::plane().createModel(false, false)) {}
 
 
-GUI::GUI(Shader shader, int transformationLocation) : m_shader(shader), m_transformationLocation(transformationLocation), m_model(Shape2D::plane().createModel(false, false)) {}
+GUI::GUI(Shader& shader, int transformationLocation) : m_shader(shader), m_transformationLocation(transformationLocation), m_model(Shape2D::plane().createModel(false, false)) {}
 
 void GUI::render() {
 	enableShader();
@@ -56,6 +56,10 @@ void GUI::enableShader() {
 
 void GUI::disableShader() {
 	m_shader.disable();
+}
+
+GUIObject* GUI::getObject(int index) const {
+	return m_objects[index];
 }
 
 void GUI::addObject(GUIObject* object) {

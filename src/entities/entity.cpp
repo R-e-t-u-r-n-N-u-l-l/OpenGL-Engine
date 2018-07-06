@@ -66,6 +66,10 @@ Vector3f Entity::getScale() const {
 	return m_scale;
 }
 
+Vector3f Entity::getSize() const {
+	return m_size;
+}
+
 AABB Entity::getBoundingBox() const {
 	return m_boundingBox;
 }
@@ -76,6 +80,10 @@ bool Entity::isEmpty() const {
 
 bool Entity::collsionWithEntity(const Entity& entity) {
 	return m_boundingBox.AABBCollision(entity.getBoundingBox());
+}
+
+void Entity::updateBoundingBox() {
+	setBoundingBox(AABB(m_position - m_size / 2.0f, m_position + m_size / 2.0f));
 }
 
 Matrix4f Entity::createTransformationMatrix() const {
@@ -100,6 +108,10 @@ void Entity::setScale(Vector3f scale) {
 	m_scale = scale;
 }
 
+void Entity::setSize(Vector3f size) {
+	m_size = size;
+}
+
 void Entity::setPosition(float x, float y, float z) {
 	m_position = Vector3f(x, y, z);
 }
@@ -110,6 +122,10 @@ void Entity::setRotation(float x, float y, float z) {
 
 void Entity::setScale(float x, float y, float z) {
 	m_scale = Vector3f(x, y, z);
+}
+
+void Entity::setSize(float x, float y, float z) {
+	m_size = Vector3f(x, y, z);
 }
 
 void Entity::setScale(float scale) {

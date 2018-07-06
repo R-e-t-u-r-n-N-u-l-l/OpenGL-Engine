@@ -26,6 +26,8 @@ namespace engine {
 		~Input();
 
 		static void update();
+
+		static bool mouseMoved();
 		
 		static bool keyDown(unsigned key);
 		static bool keyPressed(unsigned key);

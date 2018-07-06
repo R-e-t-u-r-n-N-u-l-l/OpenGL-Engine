@@ -14,7 +14,7 @@ namespace engine {
 	struct Character {
 		GLfloat* vertices = new GLfloat[8];
 		GLfloat* texCoords = new GLfloat[8];
-		float xAdvance, width;
+		float xAdvance, height;
 		GLuint id;
 	};
 
@@ -27,13 +27,13 @@ namespace engine {
 		Shader m_shader;
 		GLuint m_texture;
 
-		void generateBuffers(const std::string& text, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices);
+		void generateBuffers(const std::string& text, float scale, GLfloat*& vertices, GLfloat*& texCoords, GLuint*& indices);
 
 	public:
-		Font(Shader shader, float scale, VertexArray vao, const char* texturePath, const char* fontPath);
-		Font(float scale, const char* texturePath, const char* fontPath);
+		Font(Shader shader, VertexArray vao, const char* texturePath, const char* fontPath);
+		Font(const char* texturePath, const char* fontPath);
 
-		void render(const std::string& text);
+		void render(const std::string& text, float scale);
 
 		void enableShader();
 		void disableShader();
@@ -41,8 +41,10 @@ namespace engine {
 		Character getCharacterById(int id) const;
 
 		Shader& getShader();
-		float getTextWidth(const std::string& text) const;
+		GLuint getTexture() const;
+		float getTextWidth(const std::string& text, float scale) const;
+		float getTextHeight(const std::string& text, float scale) const;
 
-		void setFont(float scale, const char* texturePath, const char* fontPath);
+		void setFont(const char* texturePath, const char* fontPath);
 	};
 }

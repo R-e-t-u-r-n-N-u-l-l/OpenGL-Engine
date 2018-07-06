@@ -25,7 +25,7 @@ bool Button::isDown() const {
 	return isHovering() && engine::Input::mouseButtonDown(m_button);
 }
 
-void Button::render(int transformationLocation, Shader & shader) {
+void Button::render(int transformationLocation, Shader& shader) {
 	shader.setUniformMatrix4f(transformationLocation, m_transformation);
 	if (isDown())
 		glBindTexture(GL_TEXTURE_2D, m_textures[2]);

@@ -45,7 +45,7 @@ namespace engine {
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
 
 			if (!data)
-				std::cerr << "Can't load image: " << path << std::endl;
+				fprintf(stderr, "Cant load image: %s\n", path);
 
 			GLuint type = GL_RGBA;
 
@@ -69,7 +69,7 @@ namespace engine {
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
 
 			if (!data)
-				std::cerr << "Can't load image: " << path << std::endl;
+				fprintf(stderr, "Cant load image: %s\n", path);
 
 			return Texture(data, w, h, n);
 		}
@@ -79,7 +79,7 @@ namespace engine {
 			unsigned char* data = stbi_load(path, &w, &h, &n, 0);
 
 			if (!data)
-				std::cerr << "Can't load image: " << path << std::endl;
+				fprintf(stderr, "Cant load image: %s\n", path);
 
 			GLFWimage image;
 
@@ -117,7 +117,7 @@ namespace engine {
 					content += line + "\n";
 			}
 			else
-				std::cerr << "Cant find file: " << path << std::endl;
+				fprintf(stderr, "Cant find file: %s\n", path);
 
 			file.close();
 

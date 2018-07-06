@@ -18,13 +18,15 @@ namespace engine {
 
 	public:
 		GUI();
-		GUI(Shader shader, int transformationLocation);
+		GUI(Shader& shader, int transformationLocation);
 
 		void render();
 		void render(Model model, GLuint texture, Matrix4f transformation);
 
 		void enableShader();
 		void disableShader();
+
+		GUIObject* getObject(int index) const;
 
 		void addObject(GUIObject* object);
 		void clear();
