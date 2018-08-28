@@ -137,19 +137,17 @@ namespace engine {
 
 		*/
 		static Vector3f createRay(const Matrix4f& projectionMatrix, const Matrix4f& viewMatrix, const int mouseX, const int mouseY, const int width, const int height) {
-			float mX = mouseX * 2.0f / width - 1.0f;
-			float mY = 1.0f - mouseY * 2.0f / height;
+			float mX = float(mouseX * 2.0f) / float(width) - 1.0f;
+			float mY = 1.0f - float(mouseY * 2.0f) / float(height);
 
-			Vector4f clipCoords(mX, mY, -1.0f, 1.0f);
+			Vector4f clipCoords(mX, mY, 1.0f, -1.0f);
 			Matrix4f iProjectionMatrix = Matrix4f::invert(projectionMatrix);
 			Vector4f eyeCoords = Vector4f::multiply(iProjectionMatrix, clipCoords);
-			eyeCoords = eyeCoords / eyeCoords.w;
 			eyeCoords = Vector4f(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
 			Matrix4f iViewMatrix = Matrix4f::invert(viewMatrix);
-			Vector4f rawRay1 = Vector4f::multiply(viewMatrix, eyeCoords);
-			Vector4f rawRay2 = Vector4f::multiply(iViewMatrix, eyeCoords);
+			Vector4f rawRay = Vector4f::multiply(iViewMatrix, eyeCoords);
 
-			Vector3f ray = rawRay2.xyz();
+			Vector3f ray = rawRay.xyz();
 			ray.normalize();
 			return ray;
 		}
@@ -412,6 +410,36 @@ namespace engine {
 		*/
 		static Vector3f RGBtoHSL(Vector3f RGB) {
 			return RGBtoHSL(RGB.x, RGB.y, RGB.z);
+		}
+
+		static Vector3f HSLtoRGB(float H, float S, float L) {
+			Vector3f RGB;
+
+			auto HToRGB = [](float P, float Q, float T) {
+				if (T < 0) T += 1;
+				if (T > 1) T -= 1;
+				if (T < 1 / 6) return P + (Q - P) * 6 * T;
+				if (T < 1 / 2) return Q;
+				if (T < 2 / 3) return P + (Q - P) * (2 / 3 - T) * 6;
+				return P;
+			};
+
+			if (S == 0)
+				RGB = Vector3f(L);
+			else {
+
+				float P = L < 0.5 ? L * (1 + S) : L + S - L * S;
+				float Q = 2 * L - Q;
+				RGB.x = HToRGB(P, Q, H + 1 / 3);
+				RGB.y = HToRGB(P, Q, H);
+				RGB.z = HToRGB(P, Q, H - 1 / 3);
+			}
+
+			return RGB;
+		}
+
+		static Vector3f HSLtoRGB(Vector3f HSL) {
+			return RGBtoHSL(HSL.x, HSL.y, HSL.z);
 		}
 	};
 }

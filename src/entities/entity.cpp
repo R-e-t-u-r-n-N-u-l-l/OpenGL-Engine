@@ -10,7 +10,7 @@ Entity::Entity(Model model) : m_model(model), m_empty(false) {
 	m_scale = Vector3f(1.0f, 1.0f, 1.0f);
 }
 
-Entity::Entity(Vector3f position, Vector3f rotation, Vector3f scale) : m_position(position), m_rotation(rotation), m_scale(scale), m_model(Model(0, 0, 0, 0, 0, 0)), m_empty(true) {}
+Entity::Entity(Vector3f position, Vector3f rotation, Vector3f scale) : m_position(position), m_rotation(rotation), m_scale(scale), m_model(Model(0, 0, 0, 0)), m_empty(true) {}
 Entity::Entity(Model model, Vector3f position, Vector3f rotation, Vector3f scale) : m_model(model), m_position(position), m_rotation(rotation), m_scale(scale), m_empty(false) {}
 
 

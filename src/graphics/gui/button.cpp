@@ -27,11 +27,19 @@ bool Button::isDown() const {
 
 void Button::render(int transformationLocation, Shader& shader) {
 	shader.setUniformMatrix4f(transformationLocation, m_transformation);
-	if (isDown())
+	if (m_active || isDown())
 		glBindTexture(GL_TEXTURE_2D, m_textures[2]);
 	else if(isHovering())
 		glBindTexture(GL_TEXTURE_2D, m_textures[1]);
 	else
 		glBindTexture(GL_TEXTURE_2D, m_textures[0]);
 	Render::renderNoBind(6);
+}
+
+bool Button::isActive() const {
+	return m_active;
+}
+
+void Button::setActive(bool active) {
+	m_active = active;
 }

@@ -85,9 +85,9 @@ Model TerrainGenerator::generateTerrainModel() {
 	}
 
 	int length = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1);
-	Model model(vertices, indices, count * 3, length);
-	model.appendBuffer(&Buffer(texCoords, count * 2, 2), 1);
-	model.appendBuffer(&Buffer(normals, count * 3, 3), 2);
+	Model model(vertices, indices, count, length);
+	model.appendBuffer(new Buffer(texCoords, count, 2), 1);
+	model.appendBuffer(new Buffer(normals, count, 3), 2);
 
 	delete vertices;
 	delete texCoords;

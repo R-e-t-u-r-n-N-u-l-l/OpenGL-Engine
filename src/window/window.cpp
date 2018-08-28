@@ -2,18 +2,22 @@
 
 using namespace engine;
 
+std::vector<GLuint> File::m_textures;
+
 Window::Window(int width, int height, const char* title, bool resizable, int monitorIndex) : m_width(width), m_height(height), m_title(title), m_fullscreen(false) {
 	if (!init(monitorIndex, resizable))
 		glfwTerminate();
 }
 
-Window::Window(const char* title, int monitorIndex) : m_title(title), m_fullscreen(true) {
+Window::Window(const char* title, bool windowed, int monitorIndex) : m_title(title), m_fullscreen(true), m_windowed(windowed) {
 	if (!init(monitorIndex))
 		glfwTerminate();
 }
 
 Window::~Window() {
 	glfwDestroyWindow(m_window);
+
+	File::clearTextures();
 
 	glfwTerminate();
 }
@@ -42,7 +46,7 @@ bool Window::init(int monitorIndex, bool resizable) {
 	if (m_fullscreen) {
 		m_width  = vidmode->width;
 		m_height = vidmode->height;
-		m_window = glfwCreateWindow(m_width, m_height, m_title, monitor, NULL);
+		m_window = glfwCreateWindow(m_width, m_height, m_title, m_windowed ? NULL : monitor, NULL);
 	}
 	else
 		m_window = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
@@ -146,6 +150,8 @@ bool Window::isOpen() {
 bool engine::Window::canUpdate() {
 	if (m_delta >= 1) {
 		m_delta--;
+		m_elapsed = glfwGetTime() - m_updated;
+		m_updated = m_elapsed + m_updated;
 		return true;
 	}
 
@@ -160,6 +166,10 @@ int Window::getHeight() const {
 	return m_height;
 }
 
+float Window::getElapsedTime() const {
+	return m_elapsed / 1000.0f;
+}
+
 float Window::getTickSpeed() const {
 	return m_tickSpeed;
 }
@@ -170,6 +180,10 @@ float Window::getAspectRatio() const {
 
 GLFWwindow* Window::getWindow() const {
 	return m_window;
+}
+
+void Window::setTitle(const char* title) {
+	glfwSetWindowTitle(m_window, title);
 }
 
 void Window::setTickSpeed(float tickSpeed) {
@@ -192,6 +206,10 @@ void Window::setCursor(const char* path, int xHot, int yHot) {
 	GLFWcursor* cursor = glfwCreateCursor(&image, xHot, yHot);
 
 	glfwSetCursor(m_window, cursor);
+}
+
+void Window::setPosition(int x, int y) {
+	glfwSetWindowPos(m_window, x, y);
 }
 
 void Window::setWindowSize(int width, int height) {

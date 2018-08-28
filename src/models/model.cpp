@@ -37,6 +37,9 @@ void Model::setTexture(GLuint texture) {
 }
 
 void Model::setColor(float r, float g, float b, float a) {
+	if (m_texture > 0)
+		glDeleteTextures(1, &m_texture);
+
 	m_texture = File::colorToTexture(r, g, b, a);
 }
 

@@ -56,7 +56,7 @@ Vector3f& Vector3f::divide(float x, float y, float z) {
 	return *this;
 }
 
-bool Vector3f::equals(const Vector3f & in) {
+bool Vector3f::equals(const Vector3f& in) {
 	return x == in.x && y == in.y && z == in.z;
 }
 

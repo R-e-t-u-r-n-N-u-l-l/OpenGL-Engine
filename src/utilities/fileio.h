@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -11,8 +12,12 @@
 #include "../stb/stb_image.h"
 
 namespace engine {
-	namespace File {
+	class File {
 
+	private:
+		static std::vector<GLuint> m_textures;
+
+	public:
 		static GLuint dataToTextureID(unsigned char* data, int width, int height, GLuint type = GL_RGB) {
 			GLuint textureID;
 			glGenTextures(1, &textureID);
@@ -22,6 +27,8 @@ namespace engine {
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			m_textures.push_back(textureID);
 
 			return textureID;
 		}
@@ -105,6 +112,8 @@ namespace engine {
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
+			m_textures.push_back(textureID);
+
 			return textureID;
 		}
 
@@ -138,5 +147,8 @@ namespace engine {
 			file.close();
 		}
 
-	}
+		static void clearTextures() {
+			glDeleteTextures(m_textures.size(), &m_textures[0]);
+		}
+	};
 }

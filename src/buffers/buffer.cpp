@@ -5,7 +5,7 @@ using namespace engine;
 Buffer::Buffer(GLfloat* data, GLsizei length, GLuint dimensions) : m_length(length), m_dimensions(dimensions) {
 	glGenBuffers(1, &m_buffer);
 	bind();
-	glBufferData(GL_ARRAY_BUFFER, dimensions * length * sizeof(GLfloat), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, dimensions * length * sizeof(data[0]), data, GL_STATIC_DRAW);
 	unbind();
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 namespace engine {
@@ -20,6 +21,10 @@ namespace engine {
 			}
 
 			return false;
+		}
+
+		void reset() {
+			m_lastTime = glfwGetTime();
 		}
 
 		float getMillis() const {

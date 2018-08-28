@@ -11,6 +11,7 @@ namespace engine {
 	private:
 		const GLuint* m_textures;
 		const int m_button;
+		bool m_active;
 
 	public:
 		Button(float x, float y, float width, float height, const GLuint textures[3], const int button = 0);
@@ -21,6 +22,10 @@ namespace engine {
 		bool isDown() const;
 
 		void render(int transformationLocation, Shader& shader) override;
+
+		bool isActive() const;
+
+		void setActive(bool active);
 
 	};
 }

@@ -176,14 +176,14 @@ namespace engine {
 			RawModel rModel;
 
 			for (unsigned int i = 0; i <= n; i++) {
-					float lon = Maths::map((float) i, 0.0f, (float) n, (float) -M_PI, (float) M_PI) + rotation;
+				float lat = Maths::map(float(i), 0.0f, float(n), float(M_PI / -2.0f), float(M_PI / 2.0f)) + rotation;
 				for (unsigned int j = 0; j <= n; j++) {
-					float lat = Maths::map((float) j, 0.0f, (float) n, (float) M_PI / -2.0f, (float) M_PI / 2.0f) + rotation;
+					float lon = Maths::map(float(j), 0.0f, float(n), float(-M_PI), float(M_PI)) + rotation;
 					float x = sin(lon) * cos(lat);
 					float y = sin(lon) * sin(lat);
 					float z = cos(lon);
 					rModel.pushVertex(Vector3f(x, y, z));
-					rModel.pushNormal(Vector3f(-x, -y, -z));
+					rModel.pushNormal(Vector3f(x, y, z));
 				}
 			}
 
